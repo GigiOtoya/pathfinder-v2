@@ -1,0 +1,43 @@
+.control-panel {
+    background-color: #222222;
+    border-right: 1px solid;
+    border-color: grey;
+    box-sizing: border-box;
+    height: 100%;
+    width: 300px;
+    min-width: 300px;
+}
+
+.control-panel h1 {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 26px;
+    border-bottom: 1px solid;
+    box-sizing: border-box;
+}
+
+.control-panel button {
+    height: 50px;
+    color: white;
+    background-color: #222222;
+    border:none;
+    font-size: 16px;
+    padding: 0;
+}
+
+.half-btn {
+    width: 50%;
+}
+
+.full-btn {
+    width: 100%;
+}
+
+.control-panel button:hover {
+    background-color: #1b1b1b;
+}
+
+.control-panel button:active {
+}
