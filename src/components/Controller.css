@@ -15,6 +15,7 @@
     text-align: center;
     font-size: 26px;
     border-bottom: 1px solid;
+    border-color: grey;
     box-sizing: border-box;
 }
 
@@ -54,4 +55,31 @@
 .control-panel button:active {
     box-shadow: inset 0px 0px 4px #c1c1c1;
     transform: scale(.99);
+}
+
+.node-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid;
+    border-color: grey;
+}
+
+.node-selection div {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    color: white;
+    padding: 5px;
+}
+
+.node-selection label {
+    padding-right: 10px;
+}
+
+.node-selection select {
+    background-color: #222222;
+    color: white;
+    border: none;
+    font-size: 16px;
 }

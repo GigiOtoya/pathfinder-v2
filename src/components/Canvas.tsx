@@ -14,8 +14,11 @@ export const Canvas = () => {
             return;
         }
         const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            return;
+        }
 
-        if (canvas && canvasContainer) {
+        if (canvasContainer) {
             const { width, height } = canvasContainer?.getBoundingClientRect();
             canvas.width = width;
             canvas.height = height;
@@ -27,6 +30,7 @@ export const Canvas = () => {
 
         ctx.fillStyle = '#1b1b1b';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     }, []);
     
     return (

@@ -36,6 +36,16 @@ export const Controller = () => {
             <button className="full-btn"> Generate Random </button>
             <button className="full-btn"> Clear Graph </button>
             <Navigation/>
+            <div className="node-selection">
+                <div>
+                    <label htmlFor="start"> Start: </label>
+                    <select name="start" id="start"></select>
+                </div>
+                <div>
+                    <label htmlFor="end"> End: </label>
+                    <select name="end" id="end"></select>
+                </div>
+            </div>
         </div>
     )
 }
