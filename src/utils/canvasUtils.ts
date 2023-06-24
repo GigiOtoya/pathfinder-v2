@@ -1,5 +1,11 @@
 import Vertex from "./Vertex";
+import Edge from "./Edge";
 import { Color, colors } from "./Colors";
+
+const DOTTED: number[] = [10,10];
+const STRAIGHT: number[] = [];
+
+type CanvasContext = CanvasRenderingContext2D;
 
 type DrawOptions = {
     vertex: Vertex,
@@ -8,11 +14,15 @@ type DrawOptions = {
     strokeWidth: number,
     lineDash: number[]
 }
-const DOTTED: number[] = [10,10];
-const STRAIGHT: number[] = [];
 
-export function drawVertex(ctx: CanvasRenderingContext2D, options: DrawOptions) {
+type edgeOptions = {
+    edge: Edge,
+    strokeColor: Color,
+    strokeWidth: number,
+    lineDash: number[]
+}
 
+export function drawVertex(ctx: CanvasContext, options: DrawOptions) {
     const { 
         vertex, 
         fillColor = colors.GREY, 
@@ -37,4 +47,22 @@ export function drawVertex(ctx: CanvasRenderingContext2D, options: DrawOptions) 
         ctx.font = "bold 20px sans-serif";
         ctx.fillText(vertex.name, vertex.x, vertex.y);
     }
+}
+
+export function drawEdge(ctx: CanvasContext, options: edgeOptions) {
+    const {
+        edge,
+        strokeColor = colors.WHITE,
+        strokeWidth = 2,
+        lineDash = STRAIGHT
+    } = options;
+
+    ctx.beginPath();
+    ctx.moveTo(edge.u.x, edge.u.y);
+    ctx.lineTo(edge.v.x, edge.v.y);
+
+    ctx.setLineDash(lineDash);
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeColor;
+    ctx.stroke();
 }
