@@ -21,3 +21,13 @@ export const colors: Colors = {
     GREY: "#3c4043",
     GREEN: "#00FF00"
 } as const;
+
+export type Line = {
+    STRAIGHT: number[],
+    DASHED: number[]
+}
+
+export const lines: Line = {
+    STRAIGHT: [],
+    DASHED: [10, 10]
+}

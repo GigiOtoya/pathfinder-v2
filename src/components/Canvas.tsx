@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import Vertex from '../utils/Vertex';
 import Edge from '../utils/Edge';
 import Graph from '../utils/Graph';
+import { colors, Color } from '../utils/Colors';
 import './Canvas.css';
 
 export const Canvas = () => {
@@ -9,24 +10,18 @@ export const Canvas = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        const canvasContainer = canvas?.parentElement;
-        if (!canvas) {
-            return;
+        if (!canvas) return;
+        
+        function resize(canvas: HTMLCanvasElement) {
+            const canvasContainer = canvas?.parentElement;
+            if (canvasContainer) {
+                canvas.width = canvasContainer.clientWidth;
+                canvas.height = canvasContainer.clientHeight;
+            }
         }
+        resize(canvas);
         const ctx = canvas.getContext('2d');
-        if (!ctx) {
-            return;
-        }
-
-        if (canvasContainer) {
-            const { width, height } = canvasContainer?.getBoundingClientRect();
-            canvas.width = width;
-            canvas.height = height;
-        }
-
-        if (!ctx) {
-            return;
-        }
+        if (!ctx) return;
 
         ctx.fillStyle = '#1b1b1b';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
