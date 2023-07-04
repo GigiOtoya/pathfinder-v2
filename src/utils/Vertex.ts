@@ -7,10 +7,10 @@ class Vertex {
     name?: string;
     fillColor: Color = colors.GREY;
     strokeColor: Color = colors.WHITE;
-    strokeWidth: number = 2;
+    strokeWidth: number = 3;
     lineDash: number[] = [];
 
-    constructor(x: number, y: number, r: number, name?: string) {
+    constructor(x: number, y: number, r: number = 20, name?: string) {
         this.x = x;
         this.y = y;
         this.r = r;

@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import { Header } from './components/Header';
 import { Controller } from './components/Controller';
-import { Canvas } from './components/Canvas';
+// import { SVG } from './components/Canvas';
+import { GraphSVG } from './components/GraphSVG';
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Header/>
       <div className="container">
         <Controller/>
-        <Canvas/>
+        <GraphSVG/>
       </div>
     </div>
   );

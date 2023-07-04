@@ -1,36 +1,26 @@
-import { useRef, useEffect } from 'react';
 import Vertex from '../utils/Vertex';
 import Edge from '../utils/Edge';
 import Graph from '../utils/Graph';
-import { colors, Color } from '../utils/Colors';
 import './Canvas.css';
-
-export const Canvas = () => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        
-        function resize(canvas: HTMLCanvasElement) {
-            const canvasContainer = canvas?.parentElement;
-            if (canvasContainer) {
-                canvas.width = canvasContainer.clientWidth;
-                canvas.height = canvasContainer.clientHeight;
-            }
-        }
-        resize(canvas);
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        ctx.fillStyle = '#1b1b1b';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    }, []);
+import { GraphSVG } from './GraphSVG';
+export const SVG = () => {
     
+    const v1 = new Vertex(100, 100, 20, 'A');
+    const v2 = new Vertex(140, 100, 20, 'B');
+    const v3 = new Vertex(180, 100, 20, 'C');
+    const v4 = new Vertex(200, 100, 20, 'D');
+
+    const vertices = [v1,v2,v3,v4];
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        console.log(e.clientX, e.clientY);
+    }
+
     return (
-        <div className='canvas-container' style={{width: "100%", height: "100%"}}>
-            <canvas ref={canvasRef}></canvas>
-        </div>
+    <div className='canvas-container' style={{width: "100%", height: "100%"}}>
+        <svg onMouseMove={ handleMouseMove }>
+            {/* <GraphSVG vertices={ vertices }  /> */}
+        </svg>
+    </div>
     )
 }
