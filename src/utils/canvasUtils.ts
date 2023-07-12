@@ -1,5 +1,4 @@
-import Vertex from "./Vertex";
-import Edge from "./Edge";
+import { Vertex, Edge } from "./graphUtils";
 import { colors } from "./Colors";
 import { getMidpoint } from "./mathUtils";
 

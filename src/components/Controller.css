@@ -1,85 +1,85 @@
 .control-panel {
-    background-color: #222222;
-    border-right: 1px solid;
-    border-color: grey;
-    box-sizing: border-box;
-    height: 100%;
-    width: 300px;
-    min-width: 300px;
+  background-color: #222222;
+  border-right: 1px solid;
+  border-color: grey;
+  box-sizing: border-box;
+  height: 100%;
+  width: 300px;
+  min-width: 300px;
 }
 
 .control-panel h1 {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-align: center;
-    font-size: 26px;
-    border-bottom: 1px solid;
-    border-color: grey;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 26px;
+  border-bottom: 1px solid;
+  border-color: grey;
+  box-sizing: border-box;
 }
 
 .control-panel button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    color: white;
-    background-color: #222222;
-    border:none;
-    font-size: 16px;
-    padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  color: white;
+  background-color: #222222;
+  border: none;
+  font-size: 16px;
+  padding: 0;
 }
 
-.side-by-side{
-    display: flex;
+.side-by-side {
+  display: flex;
 }
 
 .half-btn {
-    width: 50%;
+  width: 50%;
 }
 
 .full-btn {
-    width: 100%;
+  width: 100%;
 }
 
 .icon {
-    height: 20px;
+  height: 20px;
 }
 
 .control-panel button:hover {
-    background-color: #1b1b1b;
-    cursor: pointer;
+  background-color: #1b1b1b;
+  cursor: pointer;
 }
 
 .control-panel button:active {
-    box-shadow: inset 0px 0px 4px #c1c1c1;
-    transform: scale(.99);
+  box-shadow: inset 0px 0px 4px #c1c1c1;
+  transform: scale(0.99);
 }
 
 .node-selection {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid;
-    border-color: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid;
+  border-color: grey;
 }
 
 .node-selection div {
-    display: flex;
-    justify-content: center;
-    width: 50%;
-    color: white;
-    padding: 5px;
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  color: white;
+  padding: 5px;
 }
 
 .node-selection label {
-    padding-right: 10px;
+  padding-right: 10px;
 }
 
 .node-selection select {
-    background-color: #222222;
-    color: white;
-    border: none;
-    font-size: 16px;
+  background-color: #222222;
+  color: white;
+  border: none;
+  font-size: 16px;
 }
