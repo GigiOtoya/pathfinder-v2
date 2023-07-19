@@ -50,9 +50,10 @@ export const NodeSelection = () => (
 
 export type ControllerProps = {
   onAddVertex: () => void;
+  onAddEdge: () => void;
 };
 
-export const Controller = ({ onAddVertex }: ControllerProps) => {
+export const Controller = ({ onAddVertex, onAddEdge }: ControllerProps) => {
   return (
     <div className="control-panel">
       <h1> Control Panel </h1>
@@ -62,7 +63,10 @@ export const Controller = ({ onAddVertex }: ControllerProps) => {
           <img src={PlusIcon} alt="Add Icon" className="icon" />
           Node
         </button>
-        <AddEdgeButton />
+        <button className="half-btn" onClick={onAddEdge}>
+          <img src={PlusIcon} alt="Add Icon" className="icon" />
+          Edge
+        </button>
       </div>
       <div className="side-by-side">
         <PlayButton />
