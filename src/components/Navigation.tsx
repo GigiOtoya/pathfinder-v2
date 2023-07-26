@@ -1,6 +1,8 @@
+import { useState } from "react";
 import "./Navigation.css";
+import { Link, Route, Routes } from "react-router-dom";
 
-const algorithms: JSX.Element[] = [
+const algorithms = [
   { id: 0, name: "Dijkstra Shortest Path" },
   { id: 1, name: "Floyd-Warshall (All-Pairs)" },
   { id: 2, name: "Depth First Search (Recursive)" },
@@ -8,13 +10,35 @@ const algorithms: JSX.Element[] = [
   { id: 4, name: "Breadth First Search" },
   { id: 5, name: "Prim's Minimum Spanning Tree" },
   { id: 6, name: "Kruskal's Minimum Spanning Tree" },
-].map((algorithm) => (
-  <li key={algorithm.id}>
-    {" "}
-    <a href={algorithm.name}> {algorithm.name} </a>{" "}
-  </li>
-));
+];
 
 export const Navigation = () => {
-  return <ul className="nav"> {algorithms} </ul>;
+  const [selected, setSelected] = useState<number | null>(null);
+
+  const handleItemClick = (id: number) => {
+    setSelected(id);
+  };
+
+  return (
+    <>
+      <ul className="nav">
+        {algorithms.map((algorithm) => (
+          <li
+            key={algorithm.name}
+            className={selected === algorithm.id ? "selected" : ""}
+            onClick={() => handleItemClick(algorithm.id)}
+          >
+            <Link to={"/" + algorithm.name} className="link-style">
+              {algorithm.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Routes>
+        {algorithms.map((algorithm) => (
+          <Route path={"/" + algorithm.name}></Route>
+        ))}
+      </Routes>
+    </>
+  );
 };

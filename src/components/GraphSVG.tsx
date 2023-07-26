@@ -10,13 +10,12 @@ export const GraphSVG = () => {
 
   const [groupRef, setGroupRef] = useState<SVGGElement | null>(null);
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
-  const [graphRef, setGraphRef] = useState<Graph>(defaultGraph);
+  const [graphRef, setGraphRef] = useState<Graph>(defaultGraph({ x: 500, y: 500 }));
 
   const isAddingEdge = useRef<boolean>(false);
   const isDragging = useRef<boolean>(false);
   const isPanning = useRef<boolean>(false);
 
-  // const [viewBox, setViewBox] = useState({ string: "0 0 100 100" });
   const newViewBox = useRef<Point>({ x: 0, y: 0 });
   const startCoords = useRef<Point>({ x: 0, y: 0 });
 
@@ -26,7 +25,7 @@ export const GraphSVG = () => {
     const updateViewBox = () => {
       if (svgRef.current) {
         const { x, y } = newViewBox.current;
-        const { width, height } = svgRef.current.parentElement!.getBoundingClientRect();
+        const { width, height } = svgRef.current.getBoundingClientRect();
         setViewBox({ x: x, y: y, width: width, height: height });
       }
     };
@@ -76,13 +75,16 @@ export const GraphSVG = () => {
     });
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (isPanning.current) {
       const dx = viewBox.x - (e.clientX - startCoords.current.x);
       const dy = viewBox.y - (e.clientY - startCoords.current.y);
       const viewBoxString = `${dx} ${dy} ${viewBox.width}, ${viewBox.height}`;
       e.currentTarget.setAttribute("viewBox", viewBoxString);
       newViewBox.current = { x: dx, y: dy };
+    }
+
+    if (isAddingEdge.current) {
     }
 
     if (groupRef && svgRef.current && isDragging.current) {
@@ -109,8 +111,11 @@ export const GraphSVG = () => {
 
   // add addedge logic
   const handleMouseVertexDown = (e: React.MouseEvent, vertex: Vertex) => {
-    changePointer("grabbing");
-    isDragging.current = true;
+    if (!isAddingEdge.current) {
+      changePointer("grabbing");
+      isDragging.current = true;
+    }
+
     const group = e.currentTarget.parentElement;
     if (group instanceof SVGGElement) {
       setGroupRef(group);
@@ -119,17 +124,22 @@ export const GraphSVG = () => {
   };
 
   const handleMouseVertexUp = (e: React.MouseEvent, vertex: Vertex) => {
-    changePointer("grab");
-    isDragging.current = false;
+    if (!isAddingEdge.current) {
+      changePointer("grab");
+      isDragging.current = false;
+    } else if (vertexRef) {
+      graphRef.addEdge(new Edge(vertexRef, vertex));
+    }
+
     setVertexRef(null);
   };
 
   const handleMouseVertexEnter = () => {
-    changePointer("grab");
+    if (!isAddingEdge.current) changePointer("grab");
   };
 
   const handleMouseVertexLeave = () => {
-    changePointer("default");
+    if (!isAddingEdge.current) changePointer("default");
   };
 
   return (

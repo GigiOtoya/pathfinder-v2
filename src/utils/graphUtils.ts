@@ -15,12 +15,7 @@ class Graph {
       const vertexMap = new Map<Vertex, Vertex>();
       graph.vertices.forEach((v) => {
         const vertexCopy = new Vertex(v.x, v.y, v.r, v.name);
-        vertexCopy.setDrawingProperties(
-          v.fillColor,
-          v.strokeColor,
-          v.strokeWidth,
-          v.lineDash
-        );
+        vertexCopy.setDrawingProperties(v.fillColor, v.strokeColor, v.strokeWidth, v.lineDash);
         this.addVertex(vertexCopy);
         vertexMap.set(v, vertexCopy);
       });
@@ -31,11 +26,7 @@ class Graph {
         const v = vertexMap.get(edge.v);
         if (u && v) {
           const edgeCopy = new Edge(u, v, edge.w, edge.directed);
-          edgeCopy.setDrawingProperties(
-            edge.strokeColor,
-            edge.strokeWidth,
-            edge.lineDash
-          );
+          edgeCopy.setDrawingProperties(edge.strokeColor, edge.strokeWidth, edge.lineDash);
           this.addEdge(edgeCopy);
         }
       });
@@ -89,11 +80,7 @@ class Edge {
     this.lineDash = style;
   }
 
-  setDrawingProperties(
-    strokeColor: Color,
-    strokeWidth: number,
-    lineDash: number[]
-  ) {
+  setDrawingProperties(strokeColor: Color, strokeWidth: number, lineDash: number[]) {
     this.strokeColor = strokeColor;
     this.strokeWidth = strokeWidth;
     this.lineDash = lineDash;
