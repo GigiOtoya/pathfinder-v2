@@ -34,11 +34,11 @@ export const Navigation = () => {
           </li>
         ))}
       </ul>
-      <Routes>
+      {/* <Routes>
         {algorithms.map((algorithm) => (
           <Route path={"/" + algorithm.name}></Route>
         ))}
-      </Routes>
+      </Routes> */}
     </>
   );
 };

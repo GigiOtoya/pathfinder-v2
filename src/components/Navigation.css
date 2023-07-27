@@ -15,7 +15,7 @@
 }
 
 .selected {
-  background-color: rgb(0, 89, 255);
+  background-color: #336dff;
 }
 
 .nav li:not(.selected):hover {

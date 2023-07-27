@@ -4,7 +4,7 @@ import { Navigation } from "./Navigation";
 import PlayIcon from "../assets/PlayButton.svg";
 import PlusIcon from "../assets/plus-sign-icon.svg";
 
-export const DragButton = () => <button className="full-btn"> Drag </button>;
+// export const DragButton = () => <button className="full-btn"> Drag </button>;
 
 export const AddNodeButton = () => (
   <button className="half-btn">
@@ -27,13 +27,9 @@ export const PlayButton = () => (
   </button>
 );
 
-export const GenerateRandomButton = () => (
-  <button className="full-btn"> Generate Random </button>
-);
+export const GenerateRandomButton = () => <button className="full-btn"> Generate Random </button>;
 
-export const ClearGraphButton = () => (
-  <button className="full-btn"> Clear Graph </button>
-);
+export const ClearGraphButton = () => <button className="full-btn"> Clear Graph </button>;
 
 export const NodeSelection = () => (
   <div className="node-selection">
@@ -51,13 +47,16 @@ export const NodeSelection = () => (
 export type ControllerProps = {
   onAddVertex: () => void;
   onAddEdge: () => void;
+  onAllowDrag: () => void;
 };
 
-export const Controller = ({ onAddVertex, onAddEdge }: ControllerProps) => {
+export const Controller = ({ onAllowDrag, onAddVertex, onAddEdge }: ControllerProps) => {
   return (
     <div className="control-panel">
       <h1> Control Panel </h1>
-      <DragButton />
+      <button className="full-btn" onClick={onAllowDrag}>
+        Drag
+      </button>
       <div className="side-by-side">
         <button className="half-btn" onClick={onAddVertex}>
           <img src={PlusIcon} alt="Add Icon" className="icon" />
