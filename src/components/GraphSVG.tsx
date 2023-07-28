@@ -12,9 +12,10 @@ export const GraphSVG = () => {
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
   const [graphRef, setGraphRef] = useState<Graph>(defaultGraph({ x: 500, y: 500 }));
 
-  const pannable = useRef<boolean>(false);
-  const isDraggable = useRef<boolean>(true);
-  const isAddingVertex = useRef<boolean>(false);
+  const canDrag = useRef<boolean>(true);
+  const canAddEdge = useRef<boolean>(false);
+  const canAddVertex = useRef<boolean>(false);
+
   const isAddingEdge = useRef<boolean>(false);
   const isDragging = useRef<boolean>(false);
   const isPanning = useRef<boolean>(false);
@@ -48,17 +49,17 @@ export const GraphSVG = () => {
   };
 
   const handleAddVertex = () => {
+    canDrag.current = false;
+    canAddEdge.current = false;
+    canAddVertex.current = true;
     setCursorStyle("cell");
-    isDraggable.current = false;
-    isAddingEdge.current = false;
-    isAddingVertex.current = true;
   };
 
   const handleAddEdge = () => {
-    isDraggable.current = false;
-    isAddingVertex.current = false;
+    canDrag.current = false;
+    canAddVertex.current = false;
+    canAddEdge.current = true;
     setCursorStyle("crosshair");
-    isAddingEdge.current = true;
   };
 
   const handleGrabCanvas = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -120,12 +121,13 @@ export const GraphSVG = () => {
 
   // add addedge logic
   const handleMouseVertexDown = (e: React.MouseEvent, vertex: Vertex) => {
-    if (isDraggable.current) {
+    if (canDrag.current) {
       isDragging.current = true;
+      setCursorStyle("grabbing");
     }
 
-    if (isDragging.current) {
-      setCursorStyle("grabbing");
+    if (canAddEdge.current) {
+      isAddingEdge.current = true;
     }
 
     const group = e.currentTarget.parentElement;
@@ -133,33 +135,36 @@ export const GraphSVG = () => {
       setGroupRef(group);
       setVertexRef(vertex);
     }
+    console.log(group);
   };
 
   const handleMouseVertexUp = (e: React.MouseEvent, vertex: Vertex) => {
-    if (isDraggable.current) {
+    if (canDrag.current) {
       setCursorStyle("grab");
       isDragging.current = false;
     } else if (vertexRef && isAddingEdge.current) {
       graphRef.addEdge(new Edge(vertexRef, vertex));
+    }
+    if (canAddEdge.current) {
     }
 
     setVertexRef(null);
   };
 
   const handleMouseVertexEnter = () => {
-    if (isDraggable.current && !isDragging.current) {
+    if (canDrag.current && !isDragging.current) {
       setCursorStyle("grab");
     }
   };
 
   const handleMouseVertexLeave = () => {
-    if (isDraggable.current && !isDragging.current) {
+    if (canDrag.current && !isDragging.current) {
       setCursorStyle("default");
     }
   };
 
   const handleCanvasMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isAddingVertex.current) {
+    if (canAddVertex.current) {
       handleDrawVertex(e);
     } else {
       handleGrabCanvas(e);
@@ -182,9 +187,9 @@ export const GraphSVG = () => {
 
   const handleAllowDrag = () => {
     setCursorStyle("default");
-    isAddingVertex.current = false;
-    isAddingEdge.current = false;
-    isDraggable.current = true;
+    canAddVertex.current = false;
+    canAddEdge.current = false;
+    canDrag.current = true;
   };
 
   return (
