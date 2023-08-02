@@ -3,6 +3,7 @@ import "./Controller.css";
 import { Navigation } from "./Navigation";
 import PlayIcon from "../assets/PlayButton.svg";
 import PlusIcon from "../assets/plus-sign-icon.svg";
+import { ReactHTMLElement, useState } from "react";
 
 // export const DragButton = () => <button className="full-btn"> Drag </button>;
 
@@ -27,9 +28,9 @@ export const PlayButton = () => (
   </button>
 );
 
-export const GenerateRandomButton = () => <button className="full-btn"> Generate Random </button>;
+// export const GenerateRandomButton = () => <button className="full-btn"> Generate Random </button>;
 
-export const ClearGraphButton = () => <button className="full-btn"> Clear Graph </button>;
+// export const ClearGraphButton = () => <button className="full-btn"> Clear Graph </button>;
 
 export const NodeSelection = () => (
   <div className="node-selection">
@@ -48,21 +49,23 @@ export type ControllerProps = {
   onAddVertex: () => void;
   onAddEdge: () => void;
   onAllowDrag: () => void;
+  onClearGraph: () => void;
+  onGenerateRandom: () => void;
 };
 
-export const Controller = ({ onAllowDrag, onAddVertex, onAddEdge }: ControllerProps) => {
+export const Controller = (props: ControllerProps) => {
   return (
     <div className="control-panel">
       <h1> Control Panel </h1>
-      <button className="full-btn" onClick={onAllowDrag}>
+      <button className="full-btn" onClick={props.onAllowDrag}>
         Drag
       </button>
       <div className="side-by-side">
-        <button className="half-btn" onClick={onAddVertex}>
+        <button className="half-btn" onClick={props.onAddVertex}>
           <img src={PlusIcon} alt="Add Icon" className="icon" />
           Node
         </button>
-        <button className="half-btn" onClick={onAddEdge}>
+        <button className="half-btn" onClick={props.onAddEdge}>
           <img src={PlusIcon} alt="Add Icon" className="icon" />
           Edge
         </button>
@@ -79,8 +82,13 @@ export const Controller = ({ onAllowDrag, onAddVertex, onAddEdge }: ControllerPr
           step="1"
         ></input>
       </div>
-      <GenerateRandomButton />
-      <ClearGraphButton />
+      <button className="full-btn" onClick={props.onGenerateRandom}>
+        Generate Random
+      </button>
+      <button className="full-btn" onClick={props.onClearGraph}>
+        {" "}
+        Clear Graph{" "}
+      </button>
       <Navigation />
       <NodeSelection />
     </div>

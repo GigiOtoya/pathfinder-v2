@@ -16,12 +16,13 @@ export const GraphSVG = () => {
   const canAddEdge = useRef<boolean>(false);
   const canAddVertex = useRef<boolean>(false);
 
-  const isAddingEdge = useRef<boolean>(false);
+  const [isAddingEdge, setIsAddingEdge] = useState<boolean>(false);
   const isDragging = useRef<boolean>(false);
   const isPanning = useRef<boolean>(false);
 
   const newViewBox = useRef<Point>({ x: 0, y: 0 });
   const startCoords = useRef<Point>({ x: 0, y: 0 });
+  const endCoords = useRef<Point>({ x: 0, y: 0 });
 
   const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
@@ -48,18 +49,14 @@ export const GraphSVG = () => {
     }
   };
 
-  const handleAddVertex = () => {
-    canDrag.current = false;
-    canAddEdge.current = false;
-    canAddVertex.current = true;
-    setCursorStyle("cell");
-  };
-
-  const handleAddEdge = () => {
-    canDrag.current = false;
-    canAddVertex.current = false;
-    canAddEdge.current = true;
-    setCursorStyle("crosshair");
+  const drawTemporaryLine = (canvas: SVGSVGElement, start: Point, end: Point) => {
+    const line = canvas.querySelector("#temp-line");
+    if (line) {
+      line.setAttribute("x1", String(start.x));
+      line.setAttribute("y1", String(start.y));
+      line.setAttribute("x2", String(end.x));
+      line.setAttribute("y2", String(end.y));
+    }
   };
 
   const handleGrabCanvas = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -69,17 +66,32 @@ export const GraphSVG = () => {
     }
   };
 
-  const handleReleaseCanvas = (e: React.MouseEvent<SVGSVGElement>) => {
-    isPanning.current = false;
-    setViewBox((prevViewBox) => {
-      prevViewBox.x = newViewBox.current.x;
-      prevViewBox.y = newViewBox.current.y;
-      return prevViewBox;
-    });
+  const handleCanvasMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (canAddVertex.current) {
+      handleDrawVertex(e);
+    } else {
+      handleGrabCanvas(e);
+    }
+  };
+
+  const handleCanvasMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (isAddingEdge) {
+      setIsAddingEdge(false);
+    }
+    if (isPanning.current) {
+      isPanning.current = false;
+      setViewBox((prevViewBox) => {
+        prevViewBox.x = newViewBox.current.x;
+        prevViewBox.y = newViewBox.current.y;
+        return prevViewBox;
+      });
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     const currentCoords = { x: e.clientX, y: e.clientY };
+    const { left, top } = e.currentTarget.getBoundingClientRect();
+
     if (isPanning.current) {
       const dx = viewBox.x - (currentCoords.x - startCoords.current.x);
       const dy = viewBox.y - (currentCoords.y - startCoords.current.y);
@@ -88,13 +100,15 @@ export const GraphSVG = () => {
       newViewBox.current = { x: dx, y: dy };
     }
 
-    if (isAddingEdge.current) {
+    if (isAddingEdge) {
+      const x = viewBox.x + e.clientX - left;
+      const y = viewBox.y + e.clientY - top;
+      endCoords.current = { x: x, y: y };
+      drawTemporaryLine(e.currentTarget, startCoords.current, endCoords.current);
     }
 
     // groupRef && svgRef.current
     if (isDragging.current) {
-      console.log(e.currentTarget);
-      const { left, top } = e.currentTarget.getBoundingClientRect();
       const x = viewBox.x + e.clientX - left;
       const y = viewBox.y + e.clientY - top;
 
@@ -127,7 +141,8 @@ export const GraphSVG = () => {
     }
 
     if (canAddEdge.current) {
-      isAddingEdge.current = true;
+      startCoords.current = { x: vertex.x, y: vertex.y };
+      setIsAddingEdge(true);
     }
 
     const group = e.currentTarget.parentElement;
@@ -135,17 +150,18 @@ export const GraphSVG = () => {
       setGroupRef(group);
       setVertexRef(vertex);
     }
-    console.log(group);
   };
 
   const handleMouseVertexUp = (e: React.MouseEvent, vertex: Vertex) => {
     if (canDrag.current) {
       setCursorStyle("grab");
       isDragging.current = false;
-    } else if (vertexRef && isAddingEdge.current) {
+    } else if (vertexRef && isAddingEdge) {
       graphRef.addEdge(new Edge(vertexRef, vertex));
     }
+
     if (canAddEdge.current) {
+      setIsAddingEdge(false);
     }
 
     setVertexRef(null);
@@ -160,14 +176,6 @@ export const GraphSVG = () => {
   const handleMouseVertexLeave = () => {
     if (canDrag.current && !isDragging.current) {
       setCursorStyle("default");
-    }
-  };
-
-  const handleCanvasMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (canAddVertex.current) {
-      handleDrawVertex(e);
-    } else {
-      handleGrabCanvas(e);
     }
   };
 
@@ -192,12 +200,34 @@ export const GraphSVG = () => {
     canDrag.current = true;
   };
 
+  const handleAddVertex = () => {
+    canDrag.current = false;
+    canAddEdge.current = false;
+    canAddVertex.current = true;
+    setCursorStyle("cell");
+  };
+
+  const handleAddEdge = () => {
+    canDrag.current = false;
+    canAddVertex.current = false;
+    canAddEdge.current = true;
+    setCursorStyle("crosshair");
+  };
+
+  const handleClearGraph = () => {
+    setGraphRef(new Graph());
+  };
+
+  const handleGenerateRandom = () => {};
+
   return (
     <>
       <Controller
         onAllowDrag={handleAllowDrag}
         onAddVertex={handleAddVertex}
         onAddEdge={handleAddEdge}
+        onClearGraph={handleClearGraph}
+        onGenerateRandom={handleGenerateRandom}
       />
       <div className="graph-container">
         <svg
@@ -206,7 +236,7 @@ export const GraphSVG = () => {
           className="svg"
           onMouseMove={(e) => handleMouseMove(e)}
           onMouseDown={(e) => handleCanvasMouseDown(e)}
-          onMouseUp={(e) => handleReleaseCanvas(e)}
+          onMouseUp={(e) => handleCanvasMouseUp(e)}
         >
           {graphRef.edges.map((edge) => (
             <line
@@ -219,6 +249,9 @@ export const GraphSVG = () => {
               strokeWidth={edge.strokeWidth}
             />
           ))}
+          {isAddingEdge && (
+            <line stroke="cyan" strokeWidth={3} strokeDasharray={10} id="temp-line" />
+          )}
           {graphRef.vertices.map((vertex) => (
             <g key={vertex.name} id={vertex.name} transform={`translate(${vertex.x}, ${vertex.y})`}>
               <circle

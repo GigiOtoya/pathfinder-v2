@@ -3,12 +3,15 @@ import { Color, colors } from "./Colors";
 class Graph {
   vertices: Vertex[];
   edges: Edge[];
-  adjacencyList: Map<Vertex, Vertex[]>;
+  // adjacencyList: Map<Vertex, Vertex[]>;
+  adjacencyList: Map<Vertex, Map<Vertex, Edge>>;
+  directed: boolean;
 
-  constructor(graph?: Graph) {
+  constructor(graph?: Graph, directed = false) {
     this.vertices = [];
     this.edges = [];
     this.adjacencyList = new Map();
+    this.directed = directed;
 
     if (graph) {
       // Mapping to dereference old vertices
@@ -25,7 +28,7 @@ class Graph {
         const u = vertexMap.get(edge.u);
         const v = vertexMap.get(edge.v);
         if (u && v) {
-          const edgeCopy = new Edge(u, v, edge.w, edge.directed);
+          const edgeCopy = new Edge(u, v, edge.w);
           edgeCopy.setDrawingProperties(edge.strokeColor, edge.strokeWidth, edge.lineDash);
           this.addEdge(edgeCopy);
         }
@@ -34,17 +37,41 @@ class Graph {
   }
 
   addVertex(vertex: Vertex) {
-    this.vertices.push(vertex);
-    this.adjacencyList.set(vertex, []);
+    // this.adjacencyList.set(vertex, []);
+    if (!this.adjacencyList.has(vertex)) {
+      this.vertices.push(vertex);
+      this.adjacencyList.set(vertex, new Map<Vertex, Edge>());
+    }
   }
 
   addEdge(edge: Edge) {
-    this.edges.push(edge);
-    this.adjacencyList.get(edge.u)?.push(edge.v);
-
-    if (!edge.directed) {
-      this.adjacencyList.get(edge.v)?.push(edge.u);
+    if (this.hasEdge(edge.u, edge.v) || edge.u === edge.v) {
+      return;
     }
+
+    const uMap = this.adjacencyList.get(edge.u);
+    const vMap = this.adjacencyList.get(edge.v);
+    if (uMap) {
+      uMap.set(edge.v, edge);
+    }
+
+    if (!this.directed && vMap) {
+      vMap.set(edge.u, edge);
+    }
+
+    this.edges.push(edge);
+    // this.adjacencyList.get(edge.u)?.push(edge.v);
+
+    // if (!edge.directed) {
+    // this.adjacencyList.get(edge.v)?.push(edge.u);
+    // }
+  }
+
+  hasEdge(u: Vertex, v: Vertex): boolean {
+    if (!this.adjacencyList.has(u) || !this.adjacencyList.has(v)) {
+      return false;
+    }
+    return this.adjacencyList.get(u)!.has(v);
   }
 }
 
@@ -52,16 +79,14 @@ class Edge {
   u: Vertex;
   v: Vertex;
   w?: number;
-  directed: boolean;
   strokeColor: Color = colors.WHITE;
   strokeWidth: number = 3;
   lineDash: number[] = [];
 
-  constructor(u: Vertex, v: Vertex, w?: number, directed = false) {
+  constructor(u: Vertex, v: Vertex, w?: number) {
     this.u = u;
     this.v = v;
     this.w = w;
-    this.directed = directed;
   }
 
   setEdgeWeight(weight: number) {
