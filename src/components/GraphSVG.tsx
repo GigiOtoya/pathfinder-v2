@@ -1,5 +1,5 @@
 import "./GraphSVG.css";
-import { defaultGraph } from "../utils/graphs";
+import * as graphs from "../utils/graphs";
 import { Graph, Vertex, Edge } from "../utils/graphUtils";
 import { useEffect, useRef, useState } from "react";
 import { Controller } from "./Controller";
@@ -10,7 +10,7 @@ export const GraphSVG = () => {
 
   const [groupRef, setGroupRef] = useState<SVGGElement | null>(null);
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
-  const [graphRef, setGraphRef] = useState<Graph>(defaultGraph({ x: 500, y: 500 }));
+  const [graphRef, setGraphRef] = useState<Graph>(graphs.starter({ x: 500, y: 500 }));
 
   const canDrag = useRef<boolean>(true);
   const canAddEdge = useRef<boolean>(false);
@@ -218,7 +218,9 @@ export const GraphSVG = () => {
     setGraphRef(new Graph());
   };
 
-  const handleGenerateRandom = () => {};
+  const handleGenerateRandom = () => {
+    setGraphRef(graphs.random(10, 1, viewBox));
+  };
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { Vertex, Edge, Graph } from "./graphUtils";
 import { Point, randomInt } from "./mathUtils";
 
-const defaultGraph = (center: Point) => {
+const starter = (center: Point) => {
   const { x, y } = center;
   const g = new Graph();
 
@@ -25,22 +25,36 @@ const defaultGraph = (center: Point) => {
 };
 
 type viewBox = {
-  minX: number;
-  minY: number;
+  x: number;
+  y: number;
   width: number;
   height: number;
 };
 
-const randomGraph = (n: number, p: number, viewBox: viewBox) => {
+const random = (n: number, p: number, viewBox: viewBox) => {
   const g = new Graph();
-  const { minX, minY, width, height } = viewBox;
+  const visited = new Set<number>();
 
   for (let i = 0; i < n; i++) {
-    const x = randomInt(minX, width);
-    const y = randomInt(minY, height);
+    const x = randomInt(viewBox.x, viewBox.width);
+    const y = randomInt(viewBox.y, viewBox.height);
     const name = String.fromCharCode(g.vertices.length + 65);
     g.addVertex(new Vertex(x, y, 25, name));
+    visited.add(i);
   }
+
+  let u = randomInt(0, Array.from(visited).length - 1);
+  visited.delete(u);
+  while (visited.size) {
+    const temp = Array.from(visited);
+    const v = temp[randomInt(0, temp.length - 1)];
+    visited.delete(v);
+    g.addEdge(new Edge(g.vertices[u], g.vertices[v]));
+    u = v;
+    console.log(visited);
+  }
+
+  return g;
 };
 
-export { defaultGraph };
+export { starter, random };
