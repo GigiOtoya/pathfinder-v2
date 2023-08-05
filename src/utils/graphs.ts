@@ -24,26 +24,27 @@ const starter = (center: Point) => {
   return g;
 };
 
-type viewBox = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+type coords = {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
 };
 
-const random = (n: number, p: number, viewBox: viewBox) => {
+const random = (n: number, p: number, view: coords) => {
   const g = new Graph();
   const visited = new Set<number>();
-
+  // generate random nodes
   for (let i = 0; i < n; i++) {
-    const x = randomInt(viewBox.x, viewBox.width);
-    const y = randomInt(viewBox.y, viewBox.height);
+    const r = 25;
+    const x = randomInt(view.minX + r, view.maxX - r);
+    const y = randomInt(view.minY + r, view.maxY - r);
     const name = String.fromCharCode(g.vertices.length + 65);
-    g.addVertex(new Vertex(x, y, 25, name));
+    g.addVertex(new Vertex(x, y, r, name));
     visited.add(i);
   }
-
-  let u = randomInt(0, Array.from(visited).length - 1);
+  // make spanning tree
+  let u = randomInt(0, visited.size - 1);
   visited.delete(u);
   while (visited.size) {
     const temp = Array.from(visited);
@@ -53,7 +54,18 @@ const random = (n: number, p: number, viewBox: viewBox) => {
     u = v;
     console.log(visited);
   }
-
+  // make more random edges
+  for (let i = 0; i < n; i++) {
+    const u = g.vertices[i];
+    const neighbors = g.adjacencyList.get(u);
+    for (let j = 0; j < n; j++) {
+      const v = g.vertices[j];
+      const makeEdge = Math.random() < p;
+      if (i != j && !neighbors?.has(v) && makeEdge) {
+        g.addEdge(new Edge(u, v));
+      }
+    }
+  }
   return g;
 };
 

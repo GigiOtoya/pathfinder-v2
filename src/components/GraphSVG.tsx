@@ -219,7 +219,13 @@ export const GraphSVG = () => {
   };
 
   const handleGenerateRandom = () => {
-    setGraphRef(graphs.random(10, 1, viewBox));
+    const coordinates = {
+      minX: viewBox.x,
+      minY: viewBox.y,
+      maxX: viewBox.x + viewBox.width,
+      maxY: viewBox.y + viewBox.height,
+    };
+    setGraphRef(graphs.random(5, 1, coordinates));
   };
 
   return (
@@ -273,7 +279,7 @@ export const GraphSVG = () => {
                 x={0}
                 y={0}
                 textAnchor="middle"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fill: vertex.strokeColor, fontSize: vertex.r }}
               >
                 {vertex.name}

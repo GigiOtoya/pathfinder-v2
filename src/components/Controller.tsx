@@ -5,32 +5,12 @@ import PlayIcon from "../assets/PlayButton.svg";
 import PlusIcon from "../assets/plus-sign-icon.svg";
 import { ReactHTMLElement, useState } from "react";
 
-// export const DragButton = () => <button className="full-btn"> Drag </button>;
-
-export const AddNodeButton = () => (
-  <button className="half-btn">
-    <img src={PlusIcon} alt="Add Icon" className="icon" />
-    Node
-  </button>
-);
-
-export const AddEdgeButton = () => (
-  <button className="half-btn">
-    <img src={PlusIcon} alt="Add Icon" className="icon" />
-    Edge
-  </button>
-);
-
 export const PlayButton = () => (
   <button className="half-btn">
     <img src={PlayIcon} alt="Play Icon" className="icon" />
     Play
   </button>
 );
-
-// export const GenerateRandomButton = () => <button className="full-btn"> Generate Random </button>;
-
-// export const ClearGraphButton = () => <button className="full-btn"> Clear Graph </button>;
 
 export const NodeSelection = () => (
   <div className="node-selection">
@@ -72,19 +52,28 @@ export const Controller = (props: ControllerProps) => {
       </div>
       <div className="side-by-side">
         <PlayButton />
-
-        <input
-          type="range"
-          className="speed-control"
-          list="values"
-          min="0"
-          max="4"
-          step="1"
-        ></input>
+        <div className="control-item">
+          <input type="range" className="speed-control" min="0" max="4" step="1"></input>
+          <div className="slider-labels">
+            <span className="label start">slow</span>
+            <span className="label end">fast</span>
+          </div>
+        </div>
       </div>
-      <button className="full-btn" onClick={props.onGenerateRandom}>
-        Generate Random
-      </button>
+      <div className="side-by-side">
+        <button className="half-btn" onClick={props.onGenerateRandom}>
+          Generate
+          <br />
+          Random
+        </button>
+        <div className="control-item">
+          <input type="range" className="speed-control" min="0" max="10" step="1"></input>
+          <div className="slider-labels">
+            <span className="label start">sparse</span>
+            <span className="label end">dense</span>
+          </div>
+        </div>
+      </div>
       <button className="full-btn" onClick={props.onClearGraph}>
         {" "}
         Clear Graph{" "}
