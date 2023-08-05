@@ -34,6 +34,9 @@ export type ControllerProps = {
 };
 
 export const Controller = (props: ControllerProps) => {
+  const min: number = 0;
+  const fast: number = 4;
+  const dense: number = 10;
   return (
     <div className="control-panel">
       <h1> Control Panel </h1>
@@ -53,7 +56,7 @@ export const Controller = (props: ControllerProps) => {
       <div className="side-by-side">
         <PlayButton />
         <div className="control-item">
-          <input type="range" className="speed-control" min="0" max="4" step="1"></input>
+          <input type="range" className="speed-control" min={min} max={fast} step="1"></input>
           <div className="slider-labels">
             <span className="label start">slow</span>
             <span className="label end">fast</span>
@@ -67,7 +70,7 @@ export const Controller = (props: ControllerProps) => {
           Random
         </button>
         <div className="control-item">
-          <input type="range" className="speed-control" min="0" max="10" step="1"></input>
+          <input type="range" className="speed-control" min={min} max={dense} step="1"></input>
           <div className="slider-labels">
             <span className="label start">sparse</span>
             <span className="label end">dense</span>
