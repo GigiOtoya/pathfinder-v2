@@ -2,7 +2,7 @@ import "./GraphSVG.css";
 import * as graphs from "../utils/graphs";
 import { Graph, Vertex, Edge } from "../utils/graphUtils";
 import { useEffect, useRef, useState } from "react";
-import { Controller } from "./Controller";
+import { ControlPanel } from "./ControlPanel";
 import { Point } from "../utils/mathUtils";
 
 export const GraphSVG = () => {
@@ -218,7 +218,7 @@ export const GraphSVG = () => {
     setGraphRef(new Graph());
   };
 
-  const handleGenerateRandom = () => {
+  const handleGenerateRandom = (e: React.MouseEvent) => {
     const coordinates = {
       minX: viewBox.x,
       minY: viewBox.y,
@@ -230,12 +230,14 @@ export const GraphSVG = () => {
 
   return (
     <>
-      <Controller
+      <ControlPanel
         onAllowDrag={handleAllowDrag}
         onAddVertex={handleAddVertex}
         onAddEdge={handleAddEdge}
         onClearGraph={handleClearGraph}
-        onGenerateRandom={handleGenerateRandom}
+        onGenerateRandom={(e) => handleGenerateRandom(e)}
+        speed={{ min: 0, max: 4 }}
+        dense={{ min: 0, max: 1 }}
       />
       <div className="graph-container">
         <svg
