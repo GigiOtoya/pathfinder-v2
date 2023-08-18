@@ -1,9 +1,19 @@
 import "./GraphSVG.css";
 import * as graphs from "../utils/graphs";
 import { Graph, Vertex, Edge } from "../utils/graphUtils";
+import { EdgesSVG } from "./EdgesSVG";
+import { VerticesSVG } from "./VerticesSVG";
 import { useEffect, useRef, useState } from "react";
 import { ControlPanel } from "./ControlPanel";
 import { Point } from "../utils/mathUtils";
+
+export type ActionTypes = "Drag" | "AddVertex" | "AddEdge";
+
+export const actions: Record<ActionTypes, ActionTypes> = {
+  Drag: "Drag",
+  AddVertex: "AddVertex",
+  AddEdge: "AddEdge",
+};
 
 export const GraphSVG = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -11,6 +21,8 @@ export const GraphSVG = () => {
   const [groupRef, setGroupRef] = useState<SVGGElement | null>(null);
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
   const [graphRef, setGraphRef] = useState<Graph>(graphs.starter({ x: 500, y: 500 }));
+
+  const [action, setAction] = useState<ActionTypes>(actions.Drag);
 
   const canDrag = useRef<boolean>(true);
   const canAddEdge = useRef<boolean>(false);
@@ -167,18 +179,6 @@ export const GraphSVG = () => {
     setVertexRef(null);
   };
 
-  const handleMouseVertexEnter = () => {
-    if (canDrag.current && !isDragging.current) {
-      setCursorStyle("grab");
-    }
-  };
-
-  const handleMouseVertexLeave = () => {
-    if (canDrag.current && !isDragging.current) {
-      setCursorStyle("default");
-    }
-  };
-
   const handleDrawVertex = (e: React.MouseEvent<SVGSVGElement>) => {
     const { left, top } = e.currentTarget.getBoundingClientRect();
     const x = viewBox.x + e.clientX - left;
@@ -198,12 +198,14 @@ export const GraphSVG = () => {
     canAddVertex.current = false;
     canAddEdge.current = false;
     canDrag.current = true;
+    setAction(actions.Drag);
   };
 
   const handleAddVertex = () => {
     canDrag.current = false;
     canAddEdge.current = false;
     canAddVertex.current = true;
+    setAction(actions.AddVertex);
     setCursorStyle("cell");
   };
 
@@ -211,6 +213,7 @@ export const GraphSVG = () => {
     canDrag.current = false;
     canAddVertex.current = false;
     canAddEdge.current = true;
+    setAction(actions.AddEdge);
     setCursorStyle("crosshair");
   };
 
@@ -228,6 +231,17 @@ export const GraphSVG = () => {
     setGraphRef(graphs.random(5, 1, coordinates));
   };
 
+  const updateVertex = (vertex: Vertex | null) => {
+    setVertexRef(vertex);
+  };
+
+  const drawNewEdge = (val: boolean, start: Vertex, end?: Vertex) => {
+    startCoords.current = { x: start.x, y: start.y };
+    if (end && start !== end) {
+      graphRef.addEdge(new Edge(start, end));
+    }
+    setIsAddingEdge(val);
+  };
   return (
     <>
       <ControlPanel
@@ -248,46 +262,17 @@ export const GraphSVG = () => {
           onMouseDown={(e) => handleCanvasMouseDown(e)}
           onMouseUp={(e) => handleCanvasMouseUp(e)}
         >
-          {graphRef.edges.map((edge) => (
-            <line
-              key={`${edge.u.name}${edge.v.name}`}
-              x1={edge.u.x}
-              y1={edge.u.y}
-              x2={edge.v.x}
-              y2={edge.v.y}
-              stroke={edge.strokeColor}
-              strokeWidth={edge.strokeWidth}
-            />
-          ))}
+          <EdgesSVG edges={graphRef.edges} />
           {isAddingEdge && (
             <line stroke="cyan" strokeWidth={3} strokeDasharray={10} id="temp-line" />
           )}
-          {graphRef.vertices.map((vertex) => (
-            <g key={vertex.name} id={vertex.name} transform={`translate(${vertex.x}, ${vertex.y})`}>
-              <circle
-                cx={0}
-                cy={0}
-                r={vertex.r}
-                fill={vertex.fillColor}
-                stroke={vertex.strokeColor}
-                strokeWidth={vertex.strokeWidth}
-                strokeDasharray={vertex.lineDash.join(" ")}
-                onMouseEnter={handleMouseVertexEnter}
-                onMouseLeave={handleMouseVertexLeave}
-                onMouseDown={(e) => handleMouseVertexDown(e, vertex)}
-                onMouseUp={(e) => handleMouseVertexUp(e, vertex)}
-              />
-              <text
-                x={0}
-                y={0}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                style={{ fill: vertex.strokeColor, fontSize: vertex.r }}
-              >
-                {vertex.name}
-              </text>
-            </g>
-          ))}
+          <VerticesSVG
+            vertices={graphRef.vertices}
+            updateVertex={updateVertex}
+            isDragging={isDragging}
+            drawNewEdge={drawNewEdge}
+            action={action}
+          />
         </svg>
       </div>
     </>

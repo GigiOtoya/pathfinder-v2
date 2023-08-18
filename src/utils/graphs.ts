@@ -24,7 +24,7 @@ const starter = (center: Point) => {
   return g;
 };
 
-type coords = {
+export type coords = {
   minX: number;
   minY: number;
   maxX: number;
