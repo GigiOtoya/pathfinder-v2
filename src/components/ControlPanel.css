@@ -30,15 +30,17 @@
   border: none;
   font-size: 16px;
   padding: 0;
+  max-width: 100%;
 }
 
-.half-btn,
-.control-item {
+button,
+.slider {
   display: flex;
   flex: 1;
+  width: 100%;
 }
 
-.control-item {
+.slider {
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -92,12 +94,8 @@ input[type="range"]::-moz-range-thumb {
   width: 95%;
 }
 
-.side-by-side {
+.group {
   display: flex;
-}
-
-.full-btn {
-  width: 100%;
 }
 
 .icon {

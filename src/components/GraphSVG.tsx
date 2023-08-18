@@ -1,20 +1,23 @@
 import "./GraphSVG.css";
 import * as graphs from "../utils/graphs";
 import { Graph, Vertex, Edge } from "../utils/graphUtils";
-import { useEffect, useRef, useState } from "react";
-import { ControlPanel } from "./ControlPanel";
+import { MutableRefObject, useContext, useEffect, useRef, useState } from "react";
 import { Point } from "../utils/mathUtils";
+import { useGraphContext } from "../context/GraphContext";
 
-export const GraphSVG = () => {
+export type graphProps = {
+  updateGraph: (newGraph: Graph) => void;
+  canDrag: MutableRefObject<boolean>;
+  canAddEdge: MutableRefObject<boolean>;
+  canAddVertex: MutableRefObject<boolean>;
+};
+
+export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const { graphRef, setGraphRef } = useGraphContext();
 
   const [groupRef, setGroupRef] = useState<SVGGElement | null>(null);
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
-  const [graphRef, setGraphRef] = useState<Graph>(graphs.starter({ x: 500, y: 500 }));
-
-  const canDrag = useRef<boolean>(true);
-  const canAddEdge = useRef<boolean>(false);
-  const canAddVertex = useRef<boolean>(false);
 
   const [isAddingEdge, setIsAddingEdge] = useState<boolean>(false);
   const isDragging = useRef<boolean>(false);
@@ -116,6 +119,13 @@ export const GraphSVG = () => {
       // groupRef.setAttribute('transform', `translate(${x},${y})`);
       // update corresponding vertex position
       // Will Re-render once state is updated.
+      // if (vertexRef && vertexRef.name) {
+      //   const index = vertexRef.name.charCodeAt(0) - 65;
+      //   graphRef.vertices[index].x = x;
+      //   graphRef.vertices[index].y = y;
+      //   props.updateGraph(graphRef);
+      // }
+
       setGraphRef((prevGraph) => {
         if (vertexRef && vertexRef.name) {
           const index = vertexRef.name.charCodeAt(0) - 65;
@@ -230,15 +240,6 @@ export const GraphSVG = () => {
 
   return (
     <>
-      <ControlPanel
-        onAllowDrag={handleAllowDrag}
-        onAddVertex={handleAddVertex}
-        onAddEdge={handleAddEdge}
-        onClearGraph={handleClearGraph}
-        onGenerateRandom={(e) => handleGenerateRandom(e)}
-        speed={{ min: 0, max: 4 }}
-        dense={{ min: 0, max: 1 }}
-      />
       <div className="graph-container">
         <svg
           ref={svgRef}
@@ -247,6 +248,7 @@ export const GraphSVG = () => {
           onMouseMove={(e) => handleMouseMove(e)}
           onMouseDown={(e) => handleCanvasMouseDown(e)}
           onMouseUp={(e) => handleCanvasMouseUp(e)}
+          cursor={canAddEdge.current ? "crosshair" : "default"}
         >
           {graphRef.edges.map((edge) => (
             <line

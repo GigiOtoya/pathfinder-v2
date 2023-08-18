@@ -1,98 +1,90 @@
-import "./ControlPanel";
 import "./ControlPanel.css";
-import { Navigation } from "./Navigation";
 import PlayIcon from "../assets/PlayButton.svg";
 import PlusIcon from "../assets/plus-sign-icon.svg";
+import { Navigation } from "./Navigation";
+import { Button } from "./Button";
+import { Slider } from "./Slider";
+import { NodeSelection } from "./NodeSelection";
+import { GraphSVG } from "./GraphSVG";
+import GraphContext, { GraphContextType } from "../context/GraphContext";
+import { useState, useRef, MutableRefObject } from "react";
+import { Graph } from "../utils/graphUtils";
+import * as graphs from "../utils/graphs";
 
-export const PlayButton = () => (
-  <button className="half-btn">
-    <img src={PlayIcon} alt="Play Icon" className="icon" />
-    Play
-  </button>
-);
+const speeds = { min: 0, max: 4, step: 1, labelStart: "slow", labelEnd: "fast" };
+const densities = { min: 0, max: 1, step: 0.1, labelStart: "sparse", labelEnd: "dense" };
+const initSpeed = (speeds.min + speeds.max) / 2;
+const initDensity = (densities.min + densities.max) / 2;
 
-export const NodeSelection = () => (
-  <div className="node-selection">
-    <div>
-      <label htmlFor="start"> Start: </label>
-      <select name="start" id="start"></select>
-    </div>
-    <div>
-      <label htmlFor="end"> End: </label>
-      <select name="end" id="end"></select>
-    </div>
-  </div>
-);
+export const ControlPanel = () => {
+  const [graphRef, setGraphRef] = useState<Graph>(graphs.starter({ x: 500, y: 500 }));
+  const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
-export type ControlPanelProps = {
-  onAddVertex: () => void;
-  onAddEdge: () => void;
-  onAllowDrag: () => void;
-  onClearGraph: () => void;
-  onGenerateRandom: (e: React.MouseEvent) => void;
-  speed: { min: number; max: number };
-  dense: { min: number; max: number };
-};
+  const contextValue: GraphContextType = { graphRef, setGraphRef };
 
-export const ControlPanel = (props: ControlPanelProps) => {
+  const [speed, setSpeed] = useState<number>(initSpeed);
+  const [density, setDensity] = useState<number>(initDensity);
+
+  const canDrag = useRef(true);
+  const canAddEdge = useRef(false);
+  const canAddVertex = useRef(false);
+
+  type Operation = "Drag" | "AddEdge" | "AddVertex";
+  const [operation, setOperation] = useState(canDrag);
+
+  const updateGraph = (newGraph: Graph) => {
+    setGraphRef(newGraph);
+  };
+
+  const updateSpeed = (newSpeed: number) => {
+    setSpeed(newSpeed);
+  };
+
+  const updateDensity = (newDensity: number) => {
+    setDensity(newDensity);
+  };
+
+  const updateRef = (ref: MutableRefObject<boolean>) => {
+    [canDrag, canAddEdge, canAddVertex].forEach((currRef) => {
+      currRef === ref ? (currRef.current = true) : (currRef.current = false);
+    });
+  };
+
+  const handleGenerateRandom = () => {};
+
+  const handleClearGraph = () => {
+    setGraphRef(new Graph());
+  };
+
   return (
-    <div className="control-panel">
-      <h1> Control Panel </h1>
-      <button className="full-btn" onClick={props.onAllowDrag}>
-        Drag
-      </button>
-      <div className="side-by-side">
-        <button className="half-btn" onClick={props.onAddVertex}>
-          <img src={PlusIcon} alt="Add Icon" className="icon" />
-          Node
-        </button>
-        <button className="half-btn" onClick={props.onAddEdge}>
-          <img src={PlusIcon} alt="Add Icon" className="icon" />
-          Edge
-        </button>
-      </div>
-      <div className="side-by-side">
-        <PlayButton />
-        <div className="control-item">
-          <input
-            type="range"
-            id="speed-control"
-            min={props.speed.min}
-            max={props.speed.max}
-            step="1"
-          ></input>
-          <div className="slider-labels">
-            <span className="label start">slow</span>
-            <span className="label end">fast</span>
+    <>
+      <GraphContext.Provider value={contextValue}>
+        <div className="control-panel">
+          <h1> Control Panel </h1>
+          <Button name="Drag" Ref={canDrag} f={updateRef} />
+          <div className="group">
+            <Button name="Node" icon={PlusIcon} Ref={canAddVertex} f={updateRef} />
+            <Button name="Edge" icon={PlusIcon} Ref={canAddEdge} f={updateRef} />
           </div>
-        </div>
-      </div>
-      <div className="side-by-side">
-        <button className="half-btn" onClick={props.onGenerateRandom}>
-          Generate
-          <br />
-          Random
-        </button>
-        <div className="control-item">
-          <input
-            type="range"
-            id="density-control"
-            min={props.dense.min}
-            max={props.dense.max}
-            step=".1"
-          ></input>
-          <div className="slider-labels">
-            <span className="label start">sparse</span>
-            <span className="label end">dense</span>
+          <div className="group">
+            <Button name="Play" icon={PlayIcon} />
+            <Slider {...speeds} value={speed} update={updateSpeed} />
           </div>
+          <div className="group">
+            <Button name="Generate Random" />
+            <Slider {...densities} value={density} update={updateDensity} />
+          </div>
+          <Button name="Clear Graph" f={handleClearGraph} />
+          <Navigation />
+          <NodeSelection />
         </div>
-      </div>
-      <button className="full-btn" onClick={props.onClearGraph}>
-        {" "}
-        Clear Graph{" "}
-      </button>
-      <Navigation />
-      <NodeSelection />
-    </div>
+        <GraphSVG
+          updateGraph={updateGraph}
+          canDrag={canDrag}
+          canAddEdge={canAddEdge}
+          canAddVertex={canAddVertex}
+        />
+      </GraphContext.Provider>
+    </>
   );
 };
