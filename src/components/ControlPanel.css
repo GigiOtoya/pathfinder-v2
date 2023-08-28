@@ -26,18 +26,49 @@
   align-items: center;
   height: 50px;
   color: white;
-  background-color: #222222;
   border: none;
   font-size: 16px;
   padding: 0;
   max-width: 100%;
 }
 
-button,
+.control-panel button,
 .slider {
   display: flex;
   flex: 1;
   width: 100%;
+}
+
+.control-panel button:not(.selected) {
+  background-color: #222222;
+}
+
+.control-panel button.selected {
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  border-top: 4px solid #0062ff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.control-panel button:not(.selected):hover {
+  background-color: #1b1b1b;
+}
+
+.control-panel div.accent {
+}
+
+.control-panel button:hover {
+  cursor: pointer;
+}
+
+.control-panel button:active {
+  /* box-shadow: inset 0px 0px 4px #c1c1c1; */
+  transform: scale(0.99);
 }
 
 .slider {
@@ -100,16 +131,6 @@ input[type="range"]::-moz-range-thumb {
 
 .icon {
   height: 20px;
-}
-
-.control-panel button:hover {
-  background-color: #1b1b1b;
-  cursor: pointer;
-}
-
-.control-panel button:active {
-  box-shadow: inset 0px 0px 4px #c1c1c1;
-  transform: scale(0.99);
 }
 
 .node-selection {

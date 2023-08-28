@@ -1,23 +1,25 @@
-import { MutableRefObject, ReactNode } from "react";
+import { ActionTypes } from "../utils/Actions";
 
 interface ButtonProps {
   name: string;
   icon?: string;
-  Ref?: MutableRefObject<boolean>;
-  f?: (ref?: any) => void;
+  action?: ActionTypes;
+  f?: (action?: ActionTypes) => void | (() => void);
+  selected?: boolean;
+  // Ref?: MutableRefObject<boolean>;
+  // f?: (ref?: any) => void;
 }
 
-export const Button = ({ name, icon, Ref, f }: ButtonProps) => {
+export const Button = ({ name, icon, action, f, selected }: ButtonProps) => {
   const handleButtonClick = () => {
-    if (Ref && f) {
-      f(Ref);
-    } else if (f) {
-      f();
+    if (f) {
+      action ? f(action) : f();
     }
   };
 
   return (
-    <button onClick={handleButtonClick}>
+    <button onClick={handleButtonClick} className={selected ? "selected" : ""}>
+      {selected && <div className="accent"></div>}
       {icon && <img src={icon} alt={`${name} icon`} className="icon" />}
       {name}
     </button>

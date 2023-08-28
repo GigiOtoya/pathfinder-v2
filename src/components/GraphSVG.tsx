@@ -1,20 +1,21 @@
 import "./GraphSVG.css";
-import * as graphs from "../utils/graphs";
 import { Graph, Vertex, Edge } from "../utils/graphUtils";
-import { MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Point } from "../utils/mathUtils";
-import { useGraphContext } from "../context/GraphContext";
+// import { useGraphContext } from "../context/GraphContext";
+import { useGraphContext } from "../context/GraphProvider";
+import { ActionTypes, actions } from "../utils/Actions";
+import { VerticesSVG } from "./VerticesSVG";
 
 export type graphProps = {
-  updateGraph: (newGraph: Graph) => void;
-  canDrag: MutableRefObject<boolean>;
-  canAddEdge: MutableRefObject<boolean>;
-  canAddVertex: MutableRefObject<boolean>;
+  action: ActionTypes;
+  updateView: (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => void;
 };
 
-export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
+export const GraphSVG = ({ action, updateView }: graphProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const { graphRef, setGraphRef } = useGraphContext();
+  const { graphState, graphDispatch } = useGraphContext();
+  // const { graphRef, setGraphRef } = useGraphContext();
 
   const [groupRef, setGroupRef] = useState<SVGGElement | null>(null);
   const [vertexRef, setVertexRef] = useState<Vertex | null>(null);
@@ -35,6 +36,7 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
         const { x, y } = newViewBox.current;
         const { width, height } = svgRef.current.getBoundingClientRect();
         setViewBox({ x: x, y: y, width: width, height: height });
+        updateView({ minX: x, minY: y, maxX: width, maxY: height });
       }
     };
 
@@ -70,7 +72,7 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
   };
 
   const handleCanvasMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (canAddVertex.current) {
+    if (action === actions.AddVertex) {
       handleDrawVertex(e);
     } else {
       handleGrabCanvas(e);
@@ -103,7 +105,7 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
       newViewBox.current = { x: dx, y: dy };
     }
 
-    if (isAddingEdge) {
+    if (graphState.linking) {
       const x = viewBox.x + e.clientX - left;
       const y = viewBox.y + e.clientY - top;
       endCoords.current = { x: x, y: y };
@@ -111,46 +113,46 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
     }
 
     // groupRef && svgRef.current
-    if (isDragging.current) {
+    if (graphState.dragging) {
       const x = viewBox.x + e.clientX - left;
       const y = viewBox.y + e.clientY - top;
-
-      // update circle svg position
-      // groupRef.setAttribute('transform', `translate(${x},${y})`);
-      // update corresponding vertex position
-      // Will Re-render once state is updated.
-      // if (vertexRef && vertexRef.name) {
-      //   const index = vertexRef.name.charCodeAt(0) - 65;
-      //   graphRef.vertices[index].x = x;
-      //   graphRef.vertices[index].y = y;
-      //   props.updateGraph(graphRef);
-      // }
-
-      setGraphRef((prevGraph) => {
-        if (vertexRef && vertexRef.name) {
-          const index = vertexRef.name.charCodeAt(0) - 65;
-          prevGraph.vertices[index].x = x;
-          prevGraph.vertices[index].y = y;
-          return new Graph(prevGraph);
-        }
-        return prevGraph;
-      });
+      graphDispatch({ type: "DRAG_VERTEX", x: x, y: y });
     }
+
+    // if (isDragging.current) {
+    //   const x = viewBox.x + e.clientX - left;
+    //   const y = viewBox.y + e.clientY - top;
+    //   if (vertexRef) {
+    //     // updateVertexPosition(vertexRef, x, y);
+    //   }
+    // }
   };
+
+  // const updateVertexPosition = (vertex: Vertex, x: number, y: number) => {
+  //   setGraphRef((prevGraph) => {
+  //     if (vertex.name) {
+  //       const index = vertex.name.charCodeAt(0) - 65;
+  //       prevGraph.vertices[index].x = x;
+  //       prevGraph.vertices[index].y = y;
+  //       return new Graph(prevGraph);
+  //     }
+  //     return prevGraph;
+  //   });
+  // };
 
   const handleDrawEdge = (u: Vertex, v: Vertex) => {
     const newEdge = new Edge(u, v);
-    graphRef.addEdge(newEdge);
+    // graphRef.addEdge(newEdge);
   };
 
   // add addedge logic
   const handleMouseVertexDown = (e: React.MouseEvent, vertex: Vertex) => {
-    if (canDrag.current) {
+    if (action === actions.Drag) {
       isDragging.current = true;
       setCursorStyle("grabbing");
     }
 
-    if (canAddEdge.current) {
+    if (action === actions.AddEdge) {
       startCoords.current = { x: vertex.x, y: vertex.y };
       setIsAddingEdge(true);
     }
@@ -163,14 +165,14 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
   };
 
   const handleMouseVertexUp = (e: React.MouseEvent, vertex: Vertex) => {
-    if (canDrag.current) {
+    if (action === actions.Drag) {
       setCursorStyle("grab");
       isDragging.current = false;
     } else if (vertexRef && isAddingEdge) {
-      graphRef.addEdge(new Edge(vertexRef, vertex));
+      // graphRef.addEdge(new Edge(vertexRef, vertex));
     }
 
-    if (canAddEdge.current) {
+    if (action === actions.AddEdge) {
       setIsAddingEdge(false);
     }
 
@@ -178,13 +180,13 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
   };
 
   const handleMouseVertexEnter = () => {
-    if (canDrag.current && !isDragging.current) {
+    if (action === actions.Drag && !isDragging.current) {
       setCursorStyle("grab");
     }
   };
 
   const handleMouseVertexLeave = () => {
-    if (canDrag.current && !isDragging.current) {
+    if (action === actions.Drag && !isDragging.current) {
       setCursorStyle("default");
     }
   };
@@ -193,50 +195,52 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
     const { left, top } = e.currentTarget.getBoundingClientRect();
     const x = viewBox.x + e.clientX - left;
     const y = viewBox.y + e.clientY - top;
+    graphDispatch({ type: "NEW_VERTEX", x: x, y: y });
+    console.log(graphState.graph);
 
-    setGraphRef((prevGraph) => {
-      const name = String.fromCharCode(prevGraph.vertices.length + 65);
-      const newVertex = new Vertex(x, y, 25, name);
-      const newGraph = new Graph(prevGraph);
-      newGraph.addVertex(newVertex);
-      return newGraph;
-    });
+    // setGraphRef((prevGraph) => {
+    //   const name = String.fromCharCode(prevGraph.vertices.length + 65);
+    //   const newVertex = new Vertex(x, y, 25, name);
+    //   const newGraph = new Graph(prevGraph);
+    //   newGraph.addVertex(newVertex);
+    //   return newGraph;
+    // });
   };
 
-  const handleAllowDrag = () => {
-    setCursorStyle("default");
-    canAddVertex.current = false;
-    canAddEdge.current = false;
-    canDrag.current = true;
-  };
+  // const handleAllowDrag = () => {
+  //   setCursorStyle("default");
+  //   canAddVertex.current = false;
+  //   canAddEdge.current = false;
+  //   canDrag.current = true;
+  // };
 
-  const handleAddVertex = () => {
-    canDrag.current = false;
-    canAddEdge.current = false;
-    canAddVertex.current = true;
-    setCursorStyle("cell");
-  };
+  // const handleAddVertex = () => {
+  //   canDrag.current = false;
+  //   canAddEdge.current = false;
+  //   canAddVertex.current = true;
+  //   setCursorStyle("cell");
+  // };
 
-  const handleAddEdge = () => {
-    canDrag.current = false;
-    canAddVertex.current = false;
-    canAddEdge.current = true;
-    setCursorStyle("crosshair");
-  };
+  // const handleAddEdge = () => {
+  //   canDrag.current = false;
+  //   canAddVertex.current = false;
+  //   canAddEdge.current = true;
+  //   setCursorStyle("crosshair");
+  // };
 
-  const handleClearGraph = () => {
-    setGraphRef(new Graph());
-  };
+  // const handleClearGraph = () => {
+  //   setGraphRef(new Graph());
+  // };
 
-  const handleGenerateRandom = (e: React.MouseEvent) => {
-    const coordinates = {
-      minX: viewBox.x,
-      minY: viewBox.y,
-      maxX: viewBox.x + viewBox.width,
-      maxY: viewBox.y + viewBox.height,
-    };
-    setGraphRef(graphs.random(5, 1, coordinates));
-  };
+  // const handleGenerateRandom = (e: React.MouseEvent) => {
+  //   const coordinates = {
+  //     minX: viewBox.x,
+  //     minY: viewBox.y,
+  //     maxX: viewBox.x + viewBox.width,
+  //     maxY: viewBox.y + viewBox.height,
+  //   };
+  //   setGraphRef(graphs.random(5, 1, coordinates));
+  // };
 
   return (
     <>
@@ -248,9 +252,9 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
           onMouseMove={(e) => handleMouseMove(e)}
           onMouseDown={(e) => handleCanvasMouseDown(e)}
           onMouseUp={(e) => handleCanvasMouseUp(e)}
-          cursor={canAddEdge.current ? "crosshair" : "default"}
+          cursor={action === actions.AddEdge ? "crosshair" : "default"}
         >
-          {graphRef.edges.map((edge) => (
+          {graphState.graph.edges.map((edge) => (
             <line
               key={`${edge.u.name}${edge.v.name}`}
               x1={edge.u.x}
@@ -264,7 +268,8 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
           {isAddingEdge && (
             <line stroke="cyan" strokeWidth={3} strokeDasharray={10} id="temp-line" />
           )}
-          {graphRef.vertices.map((vertex) => (
+          <VerticesSVG action={action} />
+          {/* {graphRef.vertices.map((vertex) => (
             <g key={vertex.name} id={vertex.name} transform={`translate(${vertex.x}, ${vertex.y})`}>
               <circle
                 cx={0}
@@ -289,7 +294,7 @@ export const GraphSVG = ({ canDrag, canAddEdge, canAddVertex }: graphProps) => {
                 {vertex.name}
               </text>
             </g>
-          ))}
+          ))} */}
         </svg>
       </div>
     </>

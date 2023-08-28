@@ -69,11 +69,7 @@ export function annotateEdge(ctx: CanvasContext, edge: Edge) {
   ctx.restore();
 }
 
-export function drawCanvas(
-  ctx: CanvasContext,
-  vertices: Vertex[],
-  edges: Edge[]
-) {
+export function drawCanvas(ctx: CanvasContext, vertices: Vertex[], edges: Edge[]) {
   clearCanvas(ctx);
   drawVertex(ctx, vertices);
   drawEdge(ctx, edges);

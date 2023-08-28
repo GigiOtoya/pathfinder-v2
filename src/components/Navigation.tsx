@@ -1,5 +1,6 @@
-import { useState } from "react";
 import "./Navigation.css";
+import PlayIcon from "../assets/PlayButton.svg";
+import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 const algorithms = [
@@ -13,7 +14,7 @@ const algorithms = [
 ];
 
 export const Navigation = () => {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number>(0);
 
   const handleItemClick = (id: number) => {
     setSelected(id);
@@ -28,6 +29,7 @@ export const Navigation = () => {
             className={selected === algorithm.id ? "selected" : ""}
             onClick={() => handleItemClick(algorithm.id)}
           >
+            {selected === algorithm.id && <img src={PlayIcon} alt={"arrow"} className="icon" />}
             <Link to={"/" + algorithm.name} className="link-style">
               {algorithm.name}
             </Link>

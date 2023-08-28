@@ -1,7 +1,7 @@
-export type Point = {
+export interface Point {
   x: number;
   y: number;
-};
+}
 
 export function getMidpoint(p1: Point, p2: Point): Point {
   const x: number = Math.round((p1.x + p2.x) / 2);

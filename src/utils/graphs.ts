@@ -61,7 +61,7 @@ const random = (n: number, p: number, view: coords) => {
     for (let j = 0; j < n; j++) {
       const v = g.vertices[j];
       const makeEdge = Math.random() < p;
-      if (i != j && !neighbors?.has(v) && makeEdge) {
+      if (i !== j && !neighbors?.has(v) && makeEdge) {
         g.addEdge(new Edge(u, v));
       }
     }
