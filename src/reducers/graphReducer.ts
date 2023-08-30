@@ -29,7 +29,7 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
     case "NEW_GRAPH":
       return {
         ...state,
-        graph: new Graph(action.graph),
+        graph: action.graph,
       };
 
     case "START_DRAG_VERTEX":
@@ -80,11 +80,14 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
       };
 
     case "END_LINKING": {
-      const u = state.active;
-      const v = action.vertex;
+      const u = state.active; // referencing old graph
+      const v = action.vertex; // referencing old graph
+
       if (u && v && u !== v) {
         const newGraph = new Graph(state.graph);
-        newGraph.addEdge(new Edge(u, v));
+        const start = newGraph.vertices[u.id]; // referencing new graph
+        const end = newGraph.vertices[v.id]; // referencing new graph
+        newGraph.addEdge(new Edge(start, end));
 
         return {
           ...state,
