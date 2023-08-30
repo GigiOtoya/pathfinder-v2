@@ -1,7 +1,6 @@
-// import { useGraphContext } from "../context/GraphContext";
 import { useGraphContext } from "../context/GraphProvider";
-import { ActionTypes, actions } from "../utils/Actions";
-import { Edge, Vertex } from "../utils/graphUtils";
+import { ActionTypes, actions, updateCursor } from "../utils/Actions";
+import { Vertex } from "../utils/graphUtils";
 
 type vertexProps = {
   action: ActionTypes;
@@ -9,8 +8,6 @@ type vertexProps = {
 
 export const VerticesSVG = ({ action }: vertexProps) => {
   const { graphState, graphDispatch } = useGraphContext();
-  // const { graphRef, setGraphRef } = useGraphContext();
-  // const isDragging = useRef(false);
 
   const handleVertexMouseDown = (vertex: Vertex) => {
     if (action === actions.Drag) {
@@ -29,16 +26,25 @@ export const VerticesSVG = ({ action }: vertexProps) => {
     if (action === actions.AddEdge) {
       graphDispatch({ type: "END_LINKING", vertex: vertex });
     }
-    console.log(graphState.graph);
   };
 
-  const handleMouseVertexEnter = (e: React.MouseEvent, vertex: Vertex) => {
+  const handleMouseVertexEnter = (e: React.MouseEvent<SVGCircleElement>) => {
+    const circle = e.currentTarget;
     if (action === actions.Drag) {
+      updateCursor(circle, "drag", true);
+    }
+    if (action === actions.AddEdge) {
+      updateCursor(circle, "link", true);
     }
   };
 
-  const handleMouseVertexLeave = () => {
+  const handleMouseVertexLeave = (e: React.MouseEvent<SVGCircleElement>) => {
+    const circle = e.currentTarget;
     if (action === actions.Drag) {
+      updateCursor(circle, "drag", false);
+    }
+    if (action === actions.AddEdge) {
+      updateCursor(circle, "link", false);
     }
   };
 
@@ -54,8 +60,8 @@ export const VerticesSVG = ({ action }: vertexProps) => {
             stroke={vertex.strokeColor}
             strokeWidth={vertex.strokeWidth}
             strokeDasharray={vertex.lineDash.join(" ")}
-            //   onMouseEnter={handleMouseVertexEnter}
-            //   onMouseLeave={handleMouseVertexLeave}
+            onMouseEnter={(e) => handleMouseVertexEnter(e)}
+            onMouseLeave={(e) => handleMouseVertexLeave(e)}
             onMouseDown={() => handleVertexMouseDown(vertex)}
             onMouseUp={() => handleVertexMouseUp(vertex)}
           />

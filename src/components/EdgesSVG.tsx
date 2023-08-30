@@ -1,10 +1,11 @@
-import { useGraphContext } from "../context/GraphContext";
+import { useGraphContext } from "../context/GraphProvider";
 
 export const EdgesSVG = () => {
-  const { graphRef, setGraphRef } = useGraphContext();
+  const { graphState, graphDispatch } = useGraphContext();
+
   return (
     <>
-      {graphRef.edges.map((edge) => (
+      {graphState.graph.edges.map((edge) => (
         <line
           key={`${edge.u.name}${edge.v.name}`}
           x1={edge.u.x}

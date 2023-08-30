@@ -17,3 +17,17 @@ text {
   font-size: 24px;
   font-weight: bold;
 }
+
+circle.drag:hover {
+  cursor: grab;
+  filter: drop-shadow(3px 3px 10px rgba(255, 255, 255, 0.6));
+}
+
+circle.drag:active {
+  cursor: grabbing;
+}
+
+circle.link:hover {
+  cursor: crosshair;
+  filter: drop-shadow(3px 3px 10px rgba(255, 255, 255, 0.6));
+}

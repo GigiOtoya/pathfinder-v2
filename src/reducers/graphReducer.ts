@@ -14,9 +14,8 @@ export type GraphAction =
   | { type: "DRAG_VERTEX"; x: number; y: number }
   | { type: "END_DRAG_VERTEX" }
   | { type: "NEW_VERTEX"; x: number; y: number }
-  | { type: "NEW_EDGE"; u: Vertex; v: Vertex }
   | { type: "START_LINKING"; vertex: Vertex }
-  | { type: "END_LINKING"; vertex: Vertex };
+  | { type: "END_LINKING"; vertex: Vertex | null };
 
 export const initialGraphState: GraphState = {
   graph: new Graph(starter({ x: 500, y: 500 })),
@@ -98,15 +97,6 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
         ...state,
         linking: false,
         active: null,
-      };
-    }
-
-    case "NEW_EDGE": {
-      const newGraph = new Graph(state.graph);
-      newGraph.addEdge(new Edge(action.u, action.v));
-      return {
-        ...state,
-        graph: newGraph,
       };
     }
   }

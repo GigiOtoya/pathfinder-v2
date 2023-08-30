@@ -3,30 +3,31 @@ import { Color, colors } from "./Colors";
 class Graph {
   vertices: Vertex[];
   edges: Edge[];
-  // adjacencyList: Map<Vertex, Vertex[]>;
   adjacencyList: Map<Vertex, Map<Vertex, Edge>>;
   directed: boolean;
+  nextVertexId: number;
 
   constructor(graph?: Graph, directed = false) {
     this.vertices = [];
     this.edges = [];
     this.adjacencyList = new Map();
     this.directed = directed;
+    this.nextVertexId = this.vertices.length;
 
     if (graph) {
       // Mapping to dereference old vertices
-      const vertexMap = new Map<Vertex, Vertex>();
+      const vertexMap = new Map<number, Vertex>();
       graph.vertices.forEach((v) => {
         const vertexCopy = new Vertex(v.x, v.y, v.r, v.name);
         vertexCopy.setDrawingProperties(v.fillColor, v.strokeColor, v.strokeWidth, v.lineDash);
         this.addVertex(vertexCopy);
-        vertexMap.set(v, vertexCopy);
+        vertexMap.set(v.id, vertexCopy); // maybe this?
       });
 
       graph.edges.forEach((edge) => {
         // reference new vertices
-        const u = vertexMap.get(edge.u);
-        const v = vertexMap.get(edge.v);
+        const u = vertexMap.get(edge.u.id); // copy of u
+        const v = vertexMap.get(edge.v.id); // copy of v
         if (u && v) {
           const edgeCopy = new Edge(u, v, edge.w);
           edgeCopy.setDrawingProperties(edge.strokeColor, edge.strokeWidth, edge.lineDash);
@@ -37,8 +38,8 @@ class Graph {
   }
 
   addVertex(vertex: Vertex) {
-    // this.adjacencyList.set(vertex, []);
     if (!this.adjacencyList.has(vertex)) {
+      vertex.setId(this.nextVertexId++);
       this.vertices.push(vertex);
       this.adjacencyList.set(vertex, new Map<Vertex, Edge>());
     }
@@ -60,11 +61,7 @@ class Graph {
     }
 
     this.edges.push(edge);
-    // this.adjacencyList.get(edge.u)?.push(edge.v);
-
-    // if (!edge.directed) {
-    // this.adjacencyList.get(edge.v)?.push(edge.u);
-    // }
+    console.log(this.edges);
   }
 
   hasEdge(u: Vertex, v: Vertex): boolean {
@@ -117,6 +114,7 @@ class Vertex {
   y: number;
   r: number;
   name?: string;
+  id: number;
   fillColor: Color = colors.GREY;
   strokeColor: Color = colors.WHITE;
   strokeWidth: number = 3;
@@ -127,6 +125,11 @@ class Vertex {
     this.y = y;
     this.r = r;
     this.name = name;
+    this.id = 0;
+  }
+
+  setId(id: number) {
+    this.id = id;
   }
 
   setFillColor(color: Color) {
