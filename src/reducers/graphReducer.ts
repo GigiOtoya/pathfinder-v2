@@ -40,9 +40,9 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
       };
 
     case "DRAG_VERTEX":
-      if (state.active?.name) {
-        const index = state.active.name.charCodeAt(0) - 65;
+      if (state.active) {
         const newGraph = new Graph(state.graph);
+        const index = state.active.id;
         newGraph.vertices[index].x = action.x;
         newGraph.vertices[index].y = action.y;
         return {

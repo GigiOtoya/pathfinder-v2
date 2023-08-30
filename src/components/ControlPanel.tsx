@@ -6,9 +6,7 @@ import { Button } from "./Button";
 import { Slider } from "./Slider";
 import { NodeSelection } from "./NodeSelection";
 import { GraphSVG } from "./GraphSVG";
-// import GraphContext, { GraphContextType } from "../context/GraphContext";
-
-import { useState, useRef, MutableRefObject } from "react";
+import { useState, useRef } from "react";
 import { Graph } from "../utils/graphUtils";
 import * as graphs from "../utils/graphs";
 import { ActionTypes, actions } from "../utils/Actions";
@@ -21,18 +19,12 @@ const initDensity = (densities.min + densities.max) / 2;
 
 export const ControlPanel = () => {
   const { graphState, graphDispatch } = useGraphContext();
-  // const [graphRef, setGraphRef] = useState<Graph>(graphs.starter({ x: 500, y: 500 }));
-  // const contextValue: GraphContextType = { graphRef, setGraphRef };
 
   const viewBox = useRef({ minX: 0, minY: 0, maxX: 0, maxY: 0 });
 
   const [speed, setSpeed] = useState<number>(initSpeed);
   const [density, setDensity] = useState<number>(initDensity);
   const [action, setAction] = useState<ActionTypes>(actions.Drag);
-
-  const canDrag = useRef(true);
-  const canAddEdge = useRef(false);
-  const canAddVertex = useRef(false);
 
   const updateSpeed = (newSpeed: number) => {
     setSpeed(newSpeed);
@@ -48,20 +40,12 @@ export const ControlPanel = () => {
     }
   };
 
-  const updateRef = (ref: MutableRefObject<boolean>) => {
-    [canDrag, canAddEdge, canAddVertex].forEach((currRef) => {
-      currRef === ref ? (currRef.current = true) : (currRef.current = false);
-    });
-  };
-
   const handleGenerateRandom = () => {
     const randomGraph = graphs.random(7, density, viewBox.current);
     graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
-    // setGraphRef(randomGraph);
   };
 
   const handleClearGraph = () => {
-    // setGraphRef(new Graph());
     graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
   };
 
@@ -71,7 +55,6 @@ export const ControlPanel = () => {
 
   return (
     <>
-      {/* <GraphContext.Provider value={contextValue}> */}
       <div className="control-panel">
         <h1> Control Panel </h1>
         <Button
@@ -109,7 +92,6 @@ export const ControlPanel = () => {
         <NodeSelection />
       </div>
       <GraphSVG action={action} updateView={updateView} />
-      {/* </GraphContext.Provider> */}
     </>
   );
 };

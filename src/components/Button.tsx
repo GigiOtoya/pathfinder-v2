@@ -6,8 +6,6 @@ interface ButtonProps {
   action?: ActionTypes;
   f?: (action?: ActionTypes) => void | (() => void);
   selected?: boolean;
-  // Ref?: MutableRefObject<boolean>;
-  // f?: (ref?: any) => void;
 }
 
 export const Button = ({ name, icon, action, f, selected }: ButtonProps) => {

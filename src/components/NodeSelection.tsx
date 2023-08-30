@@ -1,11 +1,13 @@
-// import { useGraphContext } from "../context/GraphContext";
 import { useGraphContext } from "../context/GraphProvider";
+
 export const NodeSelection = () => {
   const { graphState, graphDispatch } = useGraphContext();
-  // const { graphRef, setGraphRef } = useGraphContext();
-  const options = graphState.graph.vertices.map((vertices) => (
-    <option value={vertices.name}> {vertices.name} </option>
+  const options = graphState.graph.vertices.map((vertex) => (
+    <option key={vertex.name} value={vertex.name}>
+      {vertex.name}
+    </option>
   ));
+
   return (
     <div className="node-selection">
       <div>

@@ -61,7 +61,6 @@ class Graph {
     }
 
     this.edges.push(edge);
-    console.log(this.edges);
   }
 
   hasEdge(u: Vertex, v: Vertex): boolean {

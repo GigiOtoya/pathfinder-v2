@@ -52,7 +52,6 @@ const random = (n: number, p: number, view: coords) => {
     visited.delete(v);
     g.addEdge(new Edge(g.vertices[u], g.vertices[v]));
     u = v;
-    console.log(visited);
   }
   // make more random edges
   for (let i = 0; i < n; i++) {
