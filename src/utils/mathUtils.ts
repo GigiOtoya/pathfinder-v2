@@ -18,3 +18,14 @@ export function getDistance(p1: Point, p2: Point): number {
 export function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export const getAngle = (p1: Point, p2: Point) => {
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const angle = Math.atan2(dy, dx);
+
+  if (angle < -Math.PI / 2 || angle > Math.PI / 2) {
+    return (angle - Math.PI) * (180 / Math.PI);
+  }
+  return angle * (180 / Math.PI);
+};

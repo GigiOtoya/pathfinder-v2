@@ -70,7 +70,7 @@ export const VerticesSVG = ({ action }: vertexProps) => {
             y={0}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fill: vertex.strokeColor, fontSize: vertex.r }}
+            style={{ fill: vertex.strokeColor, fontSize: vertex.r, fontWeight: "bold" }}
           >
             {vertex.name}
           </text>
