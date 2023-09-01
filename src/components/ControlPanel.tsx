@@ -84,7 +84,7 @@ export const ControlPanel = () => {
           <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
         <div className="group">
-          <Button name="Generate Random" f={handleGenerateRandom} />
+          <Button name="Generate Random(7)" f={handleGenerateRandom} />
           <Slider {...densities} value={density} update={updateDensity} />
         </div>
         <Button name="Clear Graph" f={handleClearGraph} />

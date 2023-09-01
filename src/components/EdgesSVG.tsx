@@ -28,7 +28,7 @@ export const EdgesSVG = () => {
               alignmentBaseline="text-after-edge"
               style={{ fill: colors.CYAN, fontSize: 16 }}
             >
-              {`w=${1}`}
+              {`w=${edge.w}`}
             </text>
           </g>
         );

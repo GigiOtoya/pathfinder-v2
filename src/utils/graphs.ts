@@ -5,12 +5,12 @@ const starter = (center: Point) => {
   const { x, y } = center;
   const g = new Graph();
 
-  g.addVertex(new Vertex(x, y, 25, "A"));
-  g.addVertex(new Vertex(x - 160, y - 120, 25, "B"));
-  g.addVertex(new Vertex(x + 30, y - 150, 25, "C"));
-  g.addVertex(new Vertex(x + 150, y - 20, 25, "D"));
-  g.addVertex(new Vertex(x - 125, y + 50, 25, "E"));
-  g.addVertex(new Vertex(x + 10, y + 150, 25, "F"));
+  g.addVertex(new Vertex(x, y));
+  g.addVertex(new Vertex(x - 160, y - 120));
+  g.addVertex(new Vertex(x + 30, y - 150));
+  g.addVertex(new Vertex(x + 150, y - 20));
+  g.addVertex(new Vertex(x - 125, y + 50));
+  g.addVertex(new Vertex(x + 10, y + 150));
 
   g.addEdge(new Edge(g.vertices[0], g.vertices[1]));
   g.addEdge(new Edge(g.vertices[0], g.vertices[3]));

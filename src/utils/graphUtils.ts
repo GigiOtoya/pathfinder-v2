@@ -1,16 +1,19 @@
 import { Color, colors } from "./Colors";
+import { randomInt } from "./mathUtils";
 
 class Graph {
   vertices: Vertex[];
   edges: Edge[];
   adjacencyList: Map<Vertex, Map<Vertex, Edge>>;
+  weighted: boolean;
   directed: boolean;
   nextVertexId: number;
 
-  constructor(graph?: Graph, directed = false) {
+  constructor(graph?: Graph, weighted = true, directed = false) {
     this.vertices = [];
     this.edges = [];
-    this.adjacencyList = new Map();
+    this.adjacencyList = new Map<Vertex, Map<Vertex, Edge>>();
+    this.weighted = weighted;
     this.directed = directed;
     this.nextVertexId = this.vertices.length;
 
@@ -36,10 +39,10 @@ class Graph {
       });
     }
   }
-
   addVertex(vertex: Vertex) {
     if (!this.adjacencyList.has(vertex)) {
       vertex.setId(this.nextVertexId++);
+      vertex.setName(String.fromCharCode(vertex.id + 65));
       this.vertices.push(vertex);
       this.adjacencyList.set(vertex, new Map<Vertex, Edge>());
     }
@@ -49,6 +52,9 @@ class Graph {
     if (this.hasEdge(edge.u, edge.v) || edge.u === edge.v) {
       return;
     }
+
+    const weight = edge.w && this.weighted ? edge.w : randomInt(1, 10);
+    edge.setEdgeWeight(weight);
 
     const uMap = this.adjacencyList.get(edge.u);
     const vMap = this.adjacencyList.get(edge.v);
@@ -119,7 +125,7 @@ class Vertex {
   strokeWidth: number = 3;
   lineDash: number[] = [];
 
-  constructor(x: number, y: number, r: number = 20, name?: string) {
+  constructor(x: number, y: number, r: number = 25, name?: string) {
     this.x = x;
     this.y = y;
     this.r = r;
@@ -129,6 +135,10 @@ class Vertex {
 
   setId(id: number) {
     this.id = id;
+  }
+
+  setName(name: string) {
+    this.name = name;
   }
 
   setFillColor(color: Color) {
