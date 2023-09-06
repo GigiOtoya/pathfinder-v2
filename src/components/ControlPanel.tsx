@@ -41,7 +41,7 @@ export const ControlPanel = () => {
   };
 
   const handleGenerateRandom = () => {
-    const randomGraph = graphs.random(7, density, viewBox.current);
+    const randomGraph = graphs.random(6, density, viewBox.current);
     graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
   };
 
@@ -84,7 +84,7 @@ export const ControlPanel = () => {
           <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
         <div className="group">
-          <Button name="Generate Random(7)" f={handleGenerateRandom} />
+          <Button name="Generate Random(6)" f={handleGenerateRandom} />
           <Slider {...densities} value={density} update={updateDensity} />
         </div>
         <Button name="Clear Graph" f={handleClearGraph} />
