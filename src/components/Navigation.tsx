@@ -13,11 +13,21 @@ const algorithms = [
   { id: 6, name: "Kruskal's Minimum Spanning Tree" },
 ];
 
-export const Navigation = () => {
+const urls = algorithms.map((algo) => {
+  const url = algo.name.replace(" ", "");
+  return url;
+});
+
+type navigationProps = {
+  updateAlgorithm: (id: number) => void;
+};
+
+export const Navigation = ({ updateAlgorithm }: navigationProps) => {
   const [selected, setSelected] = useState<number>(0);
 
   const handleItemClick = (id: number) => {
     setSelected(id);
+    updateAlgorithm(id);
   };
 
   return (
@@ -30,7 +40,7 @@ export const Navigation = () => {
             onClick={() => handleItemClick(algorithm.id)}
           >
             {selected === algorithm.id && <img src={PlayIcon} alt={"arrow"} className="icon" />}
-            <Link to={"/" + algorithm.name} className="link-style">
+            <Link to={"/" + algorithm.name.replaceAll(" ", "")} className="link-style">
               {algorithm.name}
             </Link>
           </li>

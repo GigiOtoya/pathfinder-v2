@@ -44,12 +44,12 @@
 }
 
 .control-panel button.selected {
-  background-color: transparent;
+  background-color: #1b1b1b;
   color: white;
   font-weight: bold;
-  border-top: 4px solid #0062ff;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top: 2px solid #0062ff;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -134,6 +134,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .node-selection {
+  background-color: #1b1b1b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -150,11 +151,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .node-selection label {
+  background-color: #1b1b1b;
   padding-right: 10px;
 }
 
 .node-selection select {
-  background-color: #222222;
+  background-color: #1b1b1b;
+  /* background-color: #222222; */
   color: white;
   border: none;
   font-size: 16px;

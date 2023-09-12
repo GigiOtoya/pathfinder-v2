@@ -11,6 +11,13 @@ import { Graph } from "../utils/graphUtils";
 import * as graphs from "../utils/graphs";
 import { ActionTypes, actions } from "../utils/Actions";
 import { useGraphContext } from "../context/GraphProvider";
+import { dijkstra } from "../algorithms/Dijkstra";
+import { delay, visualItem } from "../utils/Visualizer";
+import { depthFirstSearchi } from "../algorithms/DepthFirstSearchi";
+import { depthFirstSearchr } from "../algorithms/DepthFirstSearchr";
+import { breadthFirstSearch } from "../algorithms/BreadthFirstSearch";
+import { prim } from "../algorithms/Prim";
+import { kruskal } from "../algorithms/Kruskal";
 
 const speeds = { min: 0, max: 4, step: 1, labelStart: "slow", labelEnd: "fast" };
 const densities = { min: 0, max: 1, step: 0.1, labelStart: "sparse", labelEnd: "dense" };
@@ -22,9 +29,13 @@ export const ControlPanel = () => {
 
   const viewBox = useRef({ minX: 0, minY: 0, maxX: 0, maxY: 0 });
 
+  const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<number>(initSpeed);
   const [density, setDensity] = useState<number>(initDensity);
   const [action, setAction] = useState<ActionTypes>(actions.Drag);
+  const [algorithm, setAlgorithm] = useState(0);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
 
   const updateSpeed = (newSpeed: number) => {
     setSpeed(newSpeed);
@@ -40,6 +51,18 @@ export const ControlPanel = () => {
     }
   };
 
+  const updateStart = (id: number) => {
+    setStart(id);
+  };
+
+  const updateEnd = (id: number) => {
+    setEnd(id);
+  };
+
+  const updateAlgorithm = (id: number) => {
+    setAlgorithm(id);
+  };
+
   const handleGenerateRandom = () => {
     const randomGraph = graphs.random(6, density, viewBox.current);
     graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
@@ -49,21 +72,77 @@ export const ControlPanel = () => {
     graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
   };
 
+  const handleRandomizeWeights = () => {
+    graphDispatch({ type: "RANDOM_WEIGHTS" });
+  };
+
+  const handleVisualize = () => {
+    const source = graphState.graph.vertices[start];
+    const destination = graphState.graph.vertices[end];
+    graphDispatch({ type: "RESET" });
+
+    // console.log(algorithm);
+
+    switch (algorithm) {
+      case 0: {
+        const results = dijkstra(graphState.graph, source, destination);
+
+        play(results);
+        break;
+      }
+      // case 1:
+      //   {
+      //   }
+      //   break;
+      case 2: {
+        const results = depthFirstSearchr(graphState.graph, source, destination);
+        play(results);
+        break;
+      }
+      case 3: {
+        const results = depthFirstSearchi(graphState.graph, source, destination);
+        play(results);
+        break;
+      }
+      case 4: {
+        const results = breadthFirstSearch(graphState.graph, source, destination);
+        play(results);
+        break;
+      }
+      case 5: {
+        const results = prim(graphState.graph, source);
+        play(results);
+        break;
+      }
+      case 6: {
+        const results = kruskal(graphState.graph);
+        play(results);
+      }
+    }
+  };
+
+  const play = async (results: visualItem[]) => {
+    for (let result of results) {
+      graphDispatch({ type: "COLOR", item: result });
+      const ms = 1000 - speed * 200;
+      await delay(ms);
+    }
+  };
+
   const updateView = (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
     viewBox.current = bounds;
   };
-
   return (
     <>
       <div className="control-panel">
         <h1> Control Panel </h1>
-        <Button
-          name="Drag"
-          action={actions.Drag}
-          f={updateAction}
-          selected={action === actions.Drag}
-        />
         <div className="group">
+          <Button
+            name="Drag"
+            action={actions.Drag}
+            f={updateAction}
+            selected={action === actions.Drag}
+          />
           <Button
             name="Node"
             icon={PlusIcon}
@@ -80,16 +159,19 @@ export const ControlPanel = () => {
           />
         </div>
         <div className="group">
-          <Button name="Play" icon={PlayIcon} />
+          <Button name="Play" icon={PlayIcon} f={handleVisualize} />
           <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
         <div className="group">
           <Button name="Generate Random(6)" f={handleGenerateRandom} />
           <Slider {...densities} value={density} update={updateDensity} />
         </div>
-        <Button name="Clear Graph" f={handleClearGraph} />
-        <Navigation />
-        <NodeSelection />
+        <div className="group">
+          <Button name="Clear Graph" f={handleClearGraph} />
+          <Button name="Randomize Edge Weights" f={handleRandomizeWeights} />
+        </div>
+        <Navigation updateAlgorithm={updateAlgorithm} />
+        <NodeSelection start={start} end={end} setStart={updateStart} setEnd={updateEnd} />
       </div>
       <GraphSVG action={action} updateView={updateView} />
     </>

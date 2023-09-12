@@ -1,5 +1,8 @@
+import { colors } from "../utils/Colors";
 import { Edge, Graph, Vertex } from "../utils/graphUtils";
 import { starter } from "../utils/graphs";
+import { visualItem } from "../utils/Visualizer";
+import { act } from "@testing-library/react";
 
 export interface GraphState {
   graph: Graph;
@@ -15,7 +18,10 @@ export type GraphAction =
   | { type: "END_DRAG_VERTEX" }
   | { type: "NEW_VERTEX"; x: number; y: number }
   | { type: "START_LINKING"; vertex: Vertex }
-  | { type: "END_LINKING"; vertex: Vertex | null };
+  | { type: "END_LINKING"; vertex: Vertex | null }
+  | { type: "COLOR"; item: visualItem }
+  | { type: "RANDOM_WEIGHTS" }
+  | { type: "RESET" };
 
 export const initialGraphState: GraphState = {
   graph: new Graph(starter({ x: 500, y: 500 })),
@@ -100,6 +106,53 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
         ...state,
         linking: false,
         active: null,
+      };
+    }
+
+    case "COLOR": {
+      const newGraph = new Graph(state.graph);
+      const items = Array.isArray(action.item.item) ? action.item.item : [action.item];
+      console.log(items);
+      for (const item of items) {
+        const { item: type, stroke, fill } = item;
+        // console.log(item);
+        if (type instanceof Vertex) {
+          newGraph.vertices[type.id].strokeColor = stroke ?? type.strokeColor;
+        }
+        if (type instanceof Edge) {
+          newGraph.edges[type.id].strokeColor = stroke ?? type.strokeColor;
+        }
+      }
+
+      // if (action.item.item instanceof Vertex) {
+      //   const id = action.item.item.id;
+      //   newGraph.vertices[id].strokeColor = action.item.stroke!;
+      // }
+      // if (action.item.item instanceof Edge) {
+      //   const id = action.item.item.id;
+      //   newGraph.edges[id].strokeColor = action.item.stroke!;
+      // }
+      return {
+        ...state,
+        graph: newGraph,
+      };
+    }
+
+    case "RANDOM_WEIGHTS": {
+      const newGraph = new Graph(state.graph, state.graph.weighted, state.graph.directed, true);
+      newGraph.randomizeWeights();
+      return {
+        ...state,
+        graph: newGraph,
+      };
+    }
+
+    case "RESET": {
+      const newGraph = new Graph(state.graph, state.graph.weighted, state.graph.directed, true);
+
+      return {
+        ...state,
+        graph: newGraph,
       };
     }
   }

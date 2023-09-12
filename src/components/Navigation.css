@@ -31,7 +31,7 @@
 
 .nav li:active {
   /* box-shadow: inset 0px 0px 4px #c1c1c1; */
-  padding-inline: 12px;
+  padding-inline: 5px;
 }
 
 .link-style {

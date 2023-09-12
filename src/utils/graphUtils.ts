@@ -8,21 +8,27 @@ class Graph {
   weighted: boolean;
   directed: boolean;
   nextVertexId: number;
+  nextEdgeId: number;
+  reset: boolean;
 
-  constructor(graph?: Graph, weighted = true, directed = false) {
+  constructor(graph?: Graph, weighted = true, directed = false, reset = false) {
     this.vertices = [];
     this.edges = [];
     this.adjacencyList = new Map<Vertex, Map<Vertex, Edge>>();
     this.weighted = weighted;
     this.directed = directed;
     this.nextVertexId = this.vertices.length;
+    this.nextEdgeId = this.edges.length;
+    this.reset = reset;
 
     if (graph) {
       // Mapping to dereference old vertices
       const vertexMap = new Map<number, Vertex>();
       graph.vertices.forEach((v) => {
         const vertexCopy = new Vertex(v.x, v.y, v.r, v.name);
-        vertexCopy.setDrawingProperties(v.fillColor, v.strokeColor, v.strokeWidth, v.lineDash);
+        if (!reset) {
+          vertexCopy.setDrawingProperties(v.fillColor, v.strokeColor, v.strokeWidth, v.lineDash);
+        }
         this.addVertex(vertexCopy);
         vertexMap.set(v.id, vertexCopy); // maybe this?
       });
@@ -33,7 +39,9 @@ class Graph {
         const v = vertexMap.get(edge.v.id); // copy of v
         if (u && v) {
           const edgeCopy = new Edge(u, v, edge.w);
-          edgeCopy.setDrawingProperties(edge.strokeColor, edge.strokeWidth, edge.lineDash);
+          if (!reset) {
+            edgeCopy.setDrawingProperties(edge.strokeColor, edge.strokeWidth, edge.lineDash);
+          }
           this.addEdge(edgeCopy);
         }
       });
@@ -65,7 +73,7 @@ class Graph {
     if (!this.directed && vMap) {
       vMap.set(edge.u, edge);
     }
-
+    edge.setId(this.nextEdgeId++);
     this.edges.push(edge);
   }
 
@@ -75,12 +83,25 @@ class Graph {
     }
     return this.adjacencyList.get(u)!.has(v);
   }
+
+  getEdge(u: Vertex, v: Vertex): Edge | null {
+    if (this.hasEdge(u, v)) {
+      const edge = this.adjacencyList.get(u)!.get(v);
+      return edge!;
+    }
+    return null;
+  }
+
+  randomizeWeights() {
+    this.edges.forEach((edge) => edge.setEdgeWeight(randomInt(1, 10)));
+  }
 }
 
 class Edge {
   u: Vertex;
   v: Vertex;
   w?: number;
+  id: number;
   strokeColor: Color = colors.WHITE;
   strokeWidth: number = 3;
   lineDash: number[] = [];
@@ -89,6 +110,11 @@ class Edge {
     this.u = u;
     this.v = v;
     this.w = w;
+    this.id = 0;
+  }
+
+  setId(id: number) {
+    this.id = id;
   }
 
   setEdgeWeight(weight: number) {
@@ -122,7 +148,7 @@ class Vertex {
   id: number;
   fillColor: Color = colors.GREY;
   strokeColor: Color = colors.WHITE;
-  strokeWidth: number = 3;
+  strokeWidth: number = 4;
   lineDash: number[] = [];
 
   constructor(x: number, y: number, r: number = 25, name?: string) {

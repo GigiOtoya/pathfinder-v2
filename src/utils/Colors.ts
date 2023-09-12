@@ -6,6 +6,7 @@ export type Color = RGB | RGBA | HEX;
 
 type Colors = {
   DARK_PASTEL: Color;
+  RED: Color;
   CYAN: Color;
   AZURE: Color;
   WHITE: Color;
@@ -15,6 +16,7 @@ type Colors = {
 
 export const colors: Colors = {
   DARK_PASTEL: "#1b1b1b",
+  RED: "#FF0000",
   CYAN: "#00FEFE",
   AZURE: "#336DFF",
   WHITE: "#FFFFFF",
