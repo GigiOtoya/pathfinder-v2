@@ -65,70 +65,64 @@ export const ControlPanel = () => {
   };
 
   const handleGenerateRandom = () => {
-    const randomGraph = graphs.random(6, density, viewBox.current);
-    graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
+    if (!playing) {
+      const randomGraph = graphs.random(6, density, viewBox.current);
+      graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
+    }
   };
 
   const handleClearGraph = () => {
-    graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
+    if (!playing) graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
   };
 
   const handleRandomizeWeights = () => {
-    graphDispatch({ type: "RANDOM_WEIGHTS" });
+    if (!playing) graphDispatch({ type: "RANDOM_WEIGHTS" });
   };
 
   const handleVisualize = () => {
+    if (playing) return;
+
     const source = graphState.graph.vertices[start];
     const destination = graphState.graph.vertices[end];
     graphDispatch({ type: "RESET" });
 
-    // console.log(algorithm);
-
+    let results: visualItem[];
     switch (algorithm) {
-      case 0: {
-        const results = dijkstra(graphState.graph, source, destination);
-
-        play(results);
+      case 0:
+        results = dijkstra(graphState.graph, source, destination);
         break;
-      }
-      case 1: {
-        const results = floydWarshall(graphState.graph);
-        play(results);
+      case 1:
+        results = floydWarshall(graphState.graph);
         break;
-      }
-      case 2: {
-        const results = depthFirstSearchr(graphState.graph, source, destination);
-        play(results);
+      case 2:
+        results = depthFirstSearchr(graphState.graph, source, destination);
         break;
-      }
-      case 3: {
-        const results = depthFirstSearchi(graphState.graph, source, destination);
-        play(results);
+      case 3:
+        results = depthFirstSearchi(graphState.graph, source, destination);
         break;
-      }
-      case 4: {
-        const results = breadthFirstSearch(graphState.graph, source, destination);
-        play(results);
+      case 4:
+        results = breadthFirstSearch(graphState.graph, source, destination);
         break;
-      }
-      case 5: {
-        const results = prim(graphState.graph, source);
-        play(results);
+      case 5:
+        results = prim(graphState.graph, source);
         break;
-      }
-      case 6: {
-        const results = kruskal(graphState.graph);
-        play(results);
-      }
+      case 6:
+        results = kruskal(graphState.graph);
+        break;
+      default:
+        results = [];
     }
+    play(results);
   };
 
   const play = async (results: visualItem[]) => {
+    setPlaying(true);
     for (let result of results) {
       graphDispatch({ type: "COLOR", item: result });
       const ms = 1000 - speed * 200;
       await delay(ms);
     }
+    setPlaying(false);
   };
 
   const updateView = (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {

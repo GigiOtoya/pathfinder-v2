@@ -1,13 +1,12 @@
-import { colors } from "../utils/Colors";
 import { Edge, Graph, Vertex } from "../utils/graphUtils";
 import { starter } from "../utils/graphs";
 import { visualItem } from "../utils/Visualizer";
-import { act } from "@testing-library/react";
 
 export interface GraphState {
   graph: Graph;
   linking: boolean;
   dragging: boolean;
+  playing: boolean;
   active: Vertex | null;
 }
 
@@ -27,6 +26,7 @@ export const initialGraphState: GraphState = {
   graph: new Graph(starter({ x: 500, y: 500 })),
   linking: false,
   dragging: false,
+  playing: false,
   active: null,
 };
 
@@ -123,14 +123,6 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
         }
       }
 
-      // if (action.item.item instanceof Vertex) {
-      //   const id = action.item.item.id;
-      //   newGraph.vertices[id].strokeColor = action.item.stroke!;
-      // }
-      // if (action.item.item instanceof Edge) {
-      //   const id = action.item.item.id;
-      //   newGraph.edges[id].strokeColor = action.item.stroke!;
-      // }
       return {
         ...state,
         graph: newGraph,
