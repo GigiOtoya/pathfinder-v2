@@ -112,11 +112,10 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
     case "COLOR": {
       const newGraph = new Graph(state.graph);
       const items = Array.isArray(action.item.item) ? action.item.item : [action.item];
-      console.log(items);
       for (const item of items) {
         const { item: type, stroke, fill } = item;
-        // console.log(item);
         if (type instanceof Vertex) {
+          newGraph.vertices[type.id].fillColor = fill ?? type.fillColor;
           newGraph.vertices[type.id].strokeColor = stroke ?? type.strokeColor;
         }
         if (type instanceof Edge) {

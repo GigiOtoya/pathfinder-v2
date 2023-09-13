@@ -18,6 +18,7 @@ import { depthFirstSearchr } from "../algorithms/DepthFirstSearchr";
 import { breadthFirstSearch } from "../algorithms/BreadthFirstSearch";
 import { prim } from "../algorithms/Prim";
 import { kruskal } from "../algorithms/Kruskal";
+import { floydWarshall } from "../algorithms/FloydWarshall";
 
 const speeds = { min: 0, max: 4, step: 1, labelStart: "slow", labelEnd: "fast" };
 const densities = { min: 0, max: 1, step: 0.1, labelStart: "sparse", labelEnd: "dense" };
@@ -90,10 +91,11 @@ export const ControlPanel = () => {
         play(results);
         break;
       }
-      // case 1:
-      //   {
-      //   }
-      //   break;
+      case 1: {
+        const results = floydWarshall(graphState.graph);
+        play(results);
+        break;
+      }
       case 2: {
         const results = depthFirstSearchr(graphState.graph, source, destination);
         play(results);

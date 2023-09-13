@@ -44,38 +44,5 @@ export const dijkstra = (graph: Graph, start: Vertex, end: Vertex) => {
   const path = backtrack(paths, end);
   const result = visualizer.items.concat(path);
 
-  // let destination: Vertex | null | undefined = end;
-  // while (destination) {
-  //   visualizer.addItem({ item: destination, stroke: colors.GREEN });
-  //   const previous = paths.get(destination);
-  //   if (previous) {
-  //     const edge = graph.getEdge(destination, previous)!;
-  //     visualizer.addItem({ item: edge, stroke: colors.GREEN });
-  //   }
-  //   destination = previous;
-
-  //   // if (paths.has(end)) {
-  //   //   console.log(end);
-  //   //   visualizer.addItem({ item: end, stroke: colors.GREEN });
-  //   //   const previous = paths.get(end)!;
-  //   //   if (previous !== null) {
-  //   //     const edge = graph.getEdge(end, previous)!;
-  //   //     visualizer.addItem({ item: edge, stroke: colors.GREEN });
-  //   //   }
-  //   //   end = previous;
-  //   // }
-  // }
   return result;
 };
-
-// type pathType = Record<number, { vertexId: number; edgeId: number } | null>;
-
-// const backTrack = (paths: pathType, vertexId: number | null) => {
-//   const visualizer = new Visualizer();
-//   while (vertexId) {
-//     const previous = paths[vertexId];
-//     if (previous) {
-//       visualizer.addItem({item: previous.vertexId});
-//     }
-//   }
-// };

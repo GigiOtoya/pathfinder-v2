@@ -59,15 +59,14 @@
   background-color: #1b1b1b;
 }
 
-.control-panel div.accent {
-}
+/* .control-panel div.accent {
+} */
 
 .control-panel button:hover {
   cursor: pointer;
 }
 
 .control-panel button:active {
-  /* box-shadow: inset 0px 0px 4px #c1c1c1; */
   transform: scale(0.99);
 }
 
