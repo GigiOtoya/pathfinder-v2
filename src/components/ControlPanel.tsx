@@ -11,14 +11,15 @@ import { Graph } from "../utils/graphUtils";
 import * as graphs from "../utils/graphs";
 import { ActionTypes, actions } from "../utils/Actions";
 import { useGraphContext } from "../context/GraphProvider";
-import { dijkstra } from "../algorithms/Dijkstra";
-import { delay, visualItem } from "../utils/Visualizer";
-import { depthFirstSearchi } from "../algorithms/DepthFirstSearchi";
-import { depthFirstSearchr } from "../algorithms/DepthFirstSearchr";
-import { breadthFirstSearch } from "../algorithms/BreadthFirstSearch";
-import { prim } from "../algorithms/Prim";
-import { kruskal } from "../algorithms/Kruskal";
-import { floydWarshall } from "../algorithms/FloydWarshall";
+// import { dijkstra } from "../algorithms/Dijkstra";
+// import { delay, visualItem } from "../utils/Visualizer";
+// import { depthFirstSearchi } from "../algorithms/DepthFirstSearchi";
+// import { depthFirstSearchr } from "../algorithms/DepthFirstSearchr";
+// import { breadthFirstSearch } from "../algorithms/BreadthFirstSearch";
+// import { prim } from "../algorithms/Prim";
+// import { kruskal } from "../algorithms/Kruskal";
+// import { floydWarshall } from "../algorithms/FloydWarshall";
+import { PlayButton } from "./PlayButton";
 
 const speeds = { min: 0, max: 4, step: 1, labelStart: "slow", labelEnd: "fast" };
 const densities = { min: 0, max: 1, step: 0.1, labelStart: "sparse", labelEnd: "dense" };
@@ -30,7 +31,7 @@ export const ControlPanel = () => {
 
   const viewBox = useRef({ minX: 0, minY: 0, maxX: 0, maxY: 0 });
 
-  const [playing, setPlaying] = useState(false);
+  // const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<number>(initSpeed);
   const [density, setDensity] = useState<number>(initDensity);
   const [action, setAction] = useState<ActionTypes>(actions.Drag);
@@ -52,6 +53,7 @@ export const ControlPanel = () => {
     }
   };
 
+  const updateEndPoints = (id: number) => {};
   const updateStart = (id: number) => {
     setStart(id);
   };
@@ -65,65 +67,65 @@ export const ControlPanel = () => {
   };
 
   const handleGenerateRandom = () => {
-    if (!playing) {
+    if (!graphState.playing) {
       const randomGraph = graphs.random(6, density, viewBox.current);
       graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
     }
   };
 
   const handleClearGraph = () => {
-    if (!playing) graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
+    if (!graphState.playing) graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
   };
 
   const handleRandomizeWeights = () => {
-    if (!playing) graphDispatch({ type: "RANDOM_WEIGHTS" });
+    if (!graphState.playing) graphDispatch({ type: "RANDOM_WEIGHTS" });
   };
 
-  const handleVisualize = () => {
-    if (playing) return;
+  // const handleVisualize = () => {
+  //   if (graphState.playing) return;
 
-    const source = graphState.graph.vertices[start];
-    const destination = graphState.graph.vertices[end];
-    graphDispatch({ type: "RESET" });
+  //   const source = graphState.graph.vertices[start];
+  //   const destination = graphState.graph.vertices[end];
+  //   graphDispatch({ type: "RESET" });
 
-    let results: visualItem[];
-    switch (algorithm) {
-      case 0:
-        results = dijkstra(graphState.graph, source, destination);
-        break;
-      case 1:
-        results = floydWarshall(graphState.graph);
-        break;
-      case 2:
-        results = depthFirstSearchr(graphState.graph, source, destination);
-        break;
-      case 3:
-        results = depthFirstSearchi(graphState.graph, source, destination);
-        break;
-      case 4:
-        results = breadthFirstSearch(graphState.graph, source, destination);
-        break;
-      case 5:
-        results = prim(graphState.graph, source);
-        break;
-      case 6:
-        results = kruskal(graphState.graph);
-        break;
-      default:
-        results = [];
-    }
-    play(results);
-  };
+  //   let results: visualItem[];
+  //   switch (algorithm) {
+  //     case 0:
+  //       results = dijkstra(graphState.graph, source, destination);
+  //       break;
+  //     case 1:
+  //       results = floydWarshall(graphState.graph);
+  //       break;
+  //     case 2:
+  //       results = depthFirstSearchr(graphState.graph, source, destination);
+  //       break;
+  //     case 3:
+  //       results = depthFirstSearchi(graphState.graph, source, destination);
+  //       break;
+  //     case 4:
+  //       results = breadthFirstSearch(graphState.graph, source, destination);
+  //       break;
+  //     case 5:
+  //       results = prim(graphState.graph, source);
+  //       break;
+  //     case 6:
+  //       results = kruskal(graphState.graph);
+  //       break;
+  //     default:
+  //       results = [];
+  //   }
+  //   play(results);
+  // };
 
-  const play = async (results: visualItem[]) => {
-    setPlaying(true);
-    for (let result of results) {
-      graphDispatch({ type: "COLOR", item: result });
-      const ms = 1000 - speed * 200;
-      await delay(ms);
-    }
-    setPlaying(false);
-  };
+  // const play = async (results: visualItem[]) => {
+  //   graphDispatch({ type: "PLAY" });
+  //   for (let result of results) {
+  //     graphDispatch({ type: "COLOR", item: result });
+  //     const ms = 1000 - speed * 200;
+  //     await delay(ms);
+  //   }
+  //   graphDispatch({ type: "END_PLAY" });
+  // };
 
   const updateView = (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => {
     viewBox.current = bounds;
@@ -155,7 +157,8 @@ export const ControlPanel = () => {
           />
         </div>
         <div className="group">
-          <Button name="Play" icon={PlayIcon} f={handleVisualize} />
+          {/* <Button name="Play" icon={PlayIcon} f={handleVisualize} /> */}
+          <PlayButton algorithm={algorithm} speed={speed} start={start} end={end} />
           <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
         <div className="group">

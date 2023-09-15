@@ -39,7 +39,7 @@ export const EdgesSVG = () => {
               y={center.y}
               transform={`rotate(${angle} ${center.x} ${center.y})`}
               textAnchor="middle"
-              alignmentBaseline="text-after-edge"
+              dominantBaseline="text-after-edge"
               style={{ fill: colors.CYAN, fontSize: 16 }}
             >
               {`w=${edge.w}`}

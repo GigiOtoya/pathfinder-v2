@@ -18,6 +18,8 @@ export type GraphAction =
   | { type: "NEW_VERTEX"; x: number; y: number }
   | { type: "START_LINKING"; vertex: Vertex }
   | { type: "END_LINKING"; vertex: Vertex | null }
+  | { type: "PLAY" }
+  | { type: "END_PLAY" }
   | { type: "COLOR"; item: visualItem }
   | { type: "RANDOM_WEIGHTS" }
   | { type: "RESET" };
@@ -106,6 +108,20 @@ export const graphReducer = (state: GraphState, action: GraphAction) => {
         ...state,
         linking: false,
         active: null,
+      };
+    }
+
+    case "PLAY": {
+      return {
+        ...state,
+        playing: true,
+      };
+    }
+
+    case "END_PLAY": {
+      return {
+        ...state,
+        playing: false,
       };
     }
 

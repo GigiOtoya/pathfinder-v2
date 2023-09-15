@@ -30,6 +30,7 @@
   font-size: 16px;
   padding: 0;
   max-width: 100%;
+  position: relative;
 }
 
 .control-panel button,
@@ -37,6 +38,13 @@
   display: flex;
   flex: 1;
   width: 100%;
+}
+
+.control-panel div.progress {
+  display: flex;
+  position: absolute;
+  left: 0;
+  height: 100%;
 }
 
 .control-panel button:not(.selected) {
@@ -160,4 +168,30 @@ input[type="range"]::-moz-range-thumb {
   color: white;
   border: none;
   font-size: 16px;
+}
+
+.progress-parent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.progress-container {
+  display: flex;
+  height: 20%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.progress-children {
+  position: absolute;
 }
