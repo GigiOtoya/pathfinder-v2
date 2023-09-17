@@ -24,21 +24,21 @@ const starter = (center: Point) => {
   return g;
 };
 
-type coords = {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
+type bounds = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
-const random = (n: number, p: number, view: coords) => {
+const random = (n: number, p: number, view: bounds) => {
   const g = new Graph();
   const visited = new Set<number>();
   // generate random nodes
   for (let i = 0; i < n; i++) {
     const r = 25;
-    const x = randomInt(view.minX + r, view.maxX - r);
-    const y = randomInt(view.minY + r, view.maxY - r);
+    const x = randomInt(view.x + r, view.width - r);
+    const y = randomInt(view.y + r, view.height - r);
     const name = String.fromCharCode(g.vertices.length + 65);
     g.addVertex(new Vertex(x, y, r, name));
     visited.add(i);

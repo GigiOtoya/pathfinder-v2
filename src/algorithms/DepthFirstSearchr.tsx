@@ -1,3 +1,4 @@
+import { ControlPanel } from "../components/ControlPanel";
 import { colors } from "../utils/Colors";
 import { Graph, Vertex } from "../utils/graphUtils";
 import { Visualizer, pathType, backtrack } from "../utils/Visualizer";
@@ -9,7 +10,6 @@ export const depthFirstSearchr = (graph: Graph, start: Vertex, end: Vertex) => {
 
   const dfs = (vertex: Vertex) => {
     visited.add(vertex);
-    //draw logic
     visualizer.addItem({ item: vertex, stroke: colors.AZURE });
 
     const neighbors = Array.from(graph.adjacencyList.get(vertex) ?? []);

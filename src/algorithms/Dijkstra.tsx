@@ -2,13 +2,13 @@ import { Edge, Graph, Vertex } from "../utils/graphUtils";
 import { MinHeap, heapElement } from "../utils/MinHeap";
 import { Visualizer, backtrack, pathType } from "../utils/Visualizer";
 import { colors } from "../utils/Colors";
+import { ControlPanel } from "../components/ControlPanel";
 
 export const dijkstra = (graph: Graph, start: Vertex, end: Vertex) => {
   const visualizer = new Visualizer();
 
   const visited = new Set();
   const distances = new Map<Vertex, number>();
-  // const paths = new Map<Vertex, Vertex | null>();
   const paths: pathType = new Map();
   const heapQ = new MinHeap();
 
@@ -25,7 +25,6 @@ export const dijkstra = (graph: Graph, start: Vertex, end: Vertex) => {
     if (!visited.has(vertex)) {
       visited.add(vertex);
 
-      //draw logic
       visualizer.addItem({ item: vertex, stroke: colors.AZURE });
 
       const neighbors = graph.adjacencyList.get(vertex);

@@ -22,7 +22,6 @@ class Graph {
     this.reset = reset;
 
     if (graph) {
-      // Mapping to dereference old vertices
       const vertexMap = new Map<number, Vertex>();
       graph.vertices.forEach((v) => {
         const vertexCopy = new Vertex(v.x, v.y, v.r, v.name);
@@ -30,13 +29,12 @@ class Graph {
           vertexCopy.setDrawingProperties(v.fillColor, v.strokeColor, v.strokeWidth, v.lineDash);
         }
         this.addVertex(vertexCopy);
-        vertexMap.set(v.id, vertexCopy); // maybe this?
+        vertexMap.set(v.id, vertexCopy);
       });
 
       graph.edges.forEach((edge) => {
-        // reference new vertices
-        const u = vertexMap.get(edge.u.id); // copy of u
-        const v = vertexMap.get(edge.v.id); // copy of v
+        const u = vertexMap.get(edge.u.id);
+        const v = vertexMap.get(edge.v.id);
         if (u && v) {
           const edgeCopy = new Edge(u, v, edge.w);
           if (!reset) {
@@ -61,8 +59,12 @@ class Graph {
       return;
     }
 
-    const weight = edge.w && this.weighted ? edge.w : randomInt(1, 10);
-    edge.setEdgeWeight(weight);
+    if (this.weighted) {
+      const weight = edge.w ? edge.w : randomInt(1, 10);
+      edge.setEdgeWeight(weight);
+    } else {
+      edge.setEdgeWeight(0);
+    }
 
     const uMap = this.adjacencyList.get(edge.u);
     const vMap = this.adjacencyList.get(edge.v);
@@ -93,7 +95,9 @@ class Graph {
   }
 
   randomizeWeights() {
-    this.edges.forEach((edge) => edge.setEdgeWeight(randomInt(1, 10)));
+    if (this.weighted) {
+      this.edges.forEach((edge) => edge.setEdgeWeight(randomInt(1, 10)));
+    }
   }
 }
 

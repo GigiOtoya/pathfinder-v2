@@ -11,7 +11,6 @@ function App() {
       <div className="container">
         <GraphProvider>
           <ControlPanel />
-          {/* other routes defined here */}
         </GraphProvider>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import "./GraphSVG.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef } from "react";
 import { Point } from "../utils/mathUtils";
 import { useGraphContext } from "../context/GraphProvider";
 import { ActionTypes, actions } from "../utils/Actions";
@@ -8,7 +8,8 @@ import { EdgesSVG } from "./EdgesSVG";
 
 export type graphProps = {
   action: ActionTypes;
-  updateView: (bounds: { minX: number; minY: number; maxX: number; maxY: number }) => void;
+  viewBox: { x: number; y: number; width: number; height: number };
+  updateView: (bounds: { x: number; y: number; width: number; height: number }) => void;
 };
 
 export const GraphSVG = ({ action, updateView }: graphProps) => {
@@ -29,7 +30,7 @@ export const GraphSVG = ({ action, updateView }: graphProps) => {
         const { x, y } = newViewBox.current;
         const { width, height } = svgRef.current.getBoundingClientRect();
         setViewBox({ x: x, y: y, width: width, height: height });
-        updateView({ minX: x, minY: y, maxX: width, maxY: height });
+        updateView({ x: x, y: y, width: width, height: height });
       }
     };
 
@@ -62,6 +63,7 @@ export const GraphSVG = ({ action, updateView }: graphProps) => {
     }
     if (isPanning.current) {
       isPanning.current = false;
+
       setViewBox((prevViewBox) => {
         return {
           x: newViewBox.current.x,

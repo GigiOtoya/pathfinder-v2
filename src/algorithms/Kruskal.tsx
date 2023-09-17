@@ -2,6 +2,7 @@ import { MinHeap, heapElement } from "../utils/MinHeap";
 import { Graph, Vertex } from "../utils/graphUtils";
 import { Visualizer, visualItem } from "../utils/Visualizer";
 import { colors } from "../utils/Colors";
+import { ControlPanel } from "../components/ControlPanel";
 
 export const kruskal = (graph: Graph) => {
   const visualizer = new Visualizer();
@@ -32,14 +33,12 @@ export const kruskal = (graph: Graph) => {
   while (q.minHeap.length) {
     const { val, item: edge } = q.heapPop();
     if (find(edge.u) === find(edge.v)) {
-      //draw logic
       visualizer.addItem({ item: edge, stroke: colors.RED });
       visualizer.addItem({ item: edge, stroke: colors.WHITE });
       continue;
     }
     cost += val;
     union(edge.u, edge.v);
-    //draw logic
     visualizer.addItem({ item: edge, stroke: colors.AZURE });
     const item1: visualItem = { item: edge.u, stroke: colors.GREEN };
     const item2: visualItem = { item: edge.v, stroke: colors.GREEN };

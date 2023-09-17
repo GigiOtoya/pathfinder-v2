@@ -1,3 +1,4 @@
+import { ControlPanel } from "../components/ControlPanel";
 import { colors } from "../utils/Colors";
 import { Visualizer, visualItem } from "../utils/Visualizer";
 import { Graph } from "../utils/graphUtils";
@@ -24,15 +25,8 @@ export const floydWarshall = (graph: Graph) => {
       prev[u][v] = u;
     }
   }
-  // for (const edge of graph.edges) {
-  //   const u = edge.u.id;
-  //   const v = edge.v.id;
-  //   distances[u][v] = edge.w!;
-  //   prev[u][v] = u;
-  // }
 
   for (let k = 0; k < graph.vertices.length; k++) {
-    // draw logic
     visualizer.addItem({ item: graph.vertices[k], fill: colors.AZURE });
 
     for (let i = 0; i < graph.vertices.length; i++) {
@@ -44,7 +38,6 @@ export const floydWarshall = (graph: Graph) => {
         if (i === j || j === k) {
           continue;
         }
-        // draw logic
         const item2: visualItem = { item: graph.vertices[i], stroke: colors.AZURE };
         const item3: visualItem = { item: graph.vertices[j], stroke: colors.AZURE };
         visualizer.addItem({ item: [item2, item3] });
@@ -52,10 +45,8 @@ export const floydWarshall = (graph: Graph) => {
         if (distances[i][j] > distances[i][k] + distances[k][j]) {
           distances[i][j] = distances[i][k] + distances[k][j];
           prev[i][j] = prev[k][j];
-          // draw logic
           trace(prev, graph, i, j, visualizer);
         }
-        // draw logic
         const item4: visualItem = { item: graph.vertices[i], stroke: colors.WHITE };
         const item5: visualItem = { item: graph.vertices[j], stroke: colors.WHITE };
         const item6: visualItem = {

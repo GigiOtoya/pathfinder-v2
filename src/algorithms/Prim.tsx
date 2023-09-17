@@ -2,14 +2,13 @@ import { MinHeap } from "../utils/MinHeap";
 import { Graph, Vertex } from "../utils/graphUtils";
 import { Visualizer, pathType } from "../utils/Visualizer";
 import { colors } from "../utils/Colors";
+import { ControlPanel } from "../components/ControlPanel";
 
 export const prim = (graph: Graph, start: Vertex) => {
   const visualizer = new Visualizer();
   const visited = new Set<Vertex>();
   const q = new MinHeap();
   const prev: pathType = new Map([[start, null]]);
-  // const prev = new Map<Vertex, { p: Vertex | null; w: number }>();
-  // prev.set(start, { p: null, w: 0 });
   q.heapPush({ val: 0, item: start });
 
   while (q.minHeap.length) {
