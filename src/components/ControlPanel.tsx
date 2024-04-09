@@ -62,7 +62,7 @@ export const ControlPanel = () => {
 
   const handleGenerateRandom = () => {
     if (!graphState.playing) {
-      const randomGraph = graphs.random(6, density, viewBox.current);
+      const randomGraph: Graph = graphs.random(6, density, viewBox.current);
 
       graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
       setStart(0);

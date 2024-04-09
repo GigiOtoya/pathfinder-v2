@@ -1,5 +1,5 @@
 import "./GraphSVG.css";
-import { useEffect, useRef, useState, forwardRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Point } from "../utils/mathUtils";
 import { useGraphContext } from "../context/GraphProvider";
 import { ActionTypes, actions } from "../utils/Actions";
@@ -30,7 +30,7 @@ export const GraphSVG = ({ action, updateView }: graphProps) => {
         const { x, y } = newViewBox.current;
         const { width, height } = svgRef.current.getBoundingClientRect();
         setViewBox({ x: x, y: y, width: width, height: height });
-        updateView({ x: x, y: y, width: width, height: height });
+        updateView({ x: x, y: y, width: width + x, height: height + y });
       }
     };
 
@@ -40,7 +40,7 @@ export const GraphSVG = ({ action, updateView }: graphProps) => {
     return () => {
       window.removeEventListener("resize", updateViewBox);
     };
-  }, []);
+  }, [updateView]);
 
   const handleGrabCanvas = (e: React.MouseEvent<SVGSVGElement>) => {
     if (e.target === e.currentTarget) {
