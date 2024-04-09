@@ -26,19 +26,59 @@
   align-items: center;
   height: 50px;
   color: white;
-  background-color: #222222;
   border: none;
   font-size: 16px;
   padding: 0;
+  max-width: 100%;
+  position: relative;
 }
 
-.half-btn,
-.control-item {
+.control-panel button,
+.slider {
   display: flex;
   flex: 1;
+  width: 100%;
 }
 
-.control-item {
+.control-panel div.progress {
+  display: flex;
+  position: absolute;
+  left: 0;
+  height: 100%;
+}
+
+.control-panel button:not(.selected) {
+  background-color: #222222;
+}
+
+.control-panel button.selected {
+  background-color: #1b1b1b;
+  color: white;
+  font-weight: bold;
+  border-top: 2px solid #0062ff;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.control-panel button:not(.selected):hover {
+  background-color: #1b1b1b;
+}
+
+/* .control-panel div.accent {
+} */
+
+.control-panel button:hover {
+  cursor: pointer;
+}
+
+.control-panel button:active {
+  transform: scale(0.99);
+}
+
+.slider {
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -92,29 +132,16 @@ input[type="range"]::-moz-range-thumb {
   width: 95%;
 }
 
-.side-by-side {
+.group {
   display: flex;
-}
-
-.full-btn {
-  width: 100%;
 }
 
 .icon {
   height: 20px;
 }
 
-.control-panel button:hover {
-  background-color: #1b1b1b;
-  cursor: pointer;
-}
-
-.control-panel button:active {
-  box-shadow: inset 0px 0px 4px #c1c1c1;
-  transform: scale(0.99);
-}
-
 .node-selection {
+  background-color: #1b1b1b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -131,12 +158,43 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .node-selection label {
+  background-color: #1b1b1b;
   padding-right: 10px;
 }
 
 .node-selection select {
-  background-color: #222222;
+  background-color: #1b1b1b;
+  /* background-color: #222222; */
   color: white;
   border: none;
   font-size: 16px;
+}
+
+.progress-parent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.progress-container {
+  display: flex;
+  height: 20%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.progress-children {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
 }

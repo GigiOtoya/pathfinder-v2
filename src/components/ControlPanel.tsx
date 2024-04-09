@@ -1,98 +1,135 @@
-import "./ControlPanel";
 import "./ControlPanel.css";
-import { Navigation } from "./Navigation";
-import PlayIcon from "../assets/PlayButton.svg";
 import PlusIcon from "../assets/plus-sign-icon.svg";
+import { Navigation } from "./Navigation";
+import { Button } from "./Button";
+import { Slider } from "./Slider";
+import { NodeSelection } from "./NodeSelection";
+import { GraphSVG } from "./GraphSVG";
+import { useState, useRef, useEffect } from "react";
+import { Graph } from "../utils/graphUtils";
+import * as graphs from "../utils/graphs";
+import { ActionTypes, actions } from "../utils/Actions";
+import { useGraphContext } from "../context/GraphProvider";
+import { PlayButton } from "./PlayButton";
 
-export const PlayButton = () => (
-  <button className="half-btn">
-    <img src={PlayIcon} alt="Play Icon" className="icon" />
-    Play
-  </button>
-);
+const speeds = { min: 0, max: 4, step: 1, labelStart: "slow", labelEnd: "fast" };
+const densities = { min: 0, max: 1, step: 0.1, labelStart: "sparse", labelEnd: "dense" };
+const initSpeed = (speeds.min + speeds.max) / 2;
+const initDensity = (densities.min + densities.max) / 2;
 
-export const NodeSelection = () => (
-  <div className="node-selection">
-    <div>
-      <label htmlFor="start"> Start: </label>
-      <select name="start" id="start"></select>
-    </div>
-    <div>
-      <label htmlFor="end"> End: </label>
-      <select name="end" id="end"></select>
-    </div>
-  </div>
-);
+export const ControlPanel = () => {
+  const { graphState, graphDispatch } = useGraphContext();
 
-export type ControlPanelProps = {
-  onAddVertex: () => void;
-  onAddEdge: () => void;
-  onAllowDrag: () => void;
-  onClearGraph: () => void;
-  onGenerateRandom: (e: React.MouseEvent) => void;
-  speed: { min: number; max: number };
-  dense: { min: number; max: number };
-};
+  const viewBox = useRef({ x: 0, y: 0, width: 0, height: 0 });
+  // const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [speed, setSpeed] = useState<number>(initSpeed);
+  const [density, setDensity] = useState<number>(initDensity);
+  const [action, setAction] = useState<ActionTypes>(actions.Drag);
+  const [algorithm, setAlgorithm] = useState(0);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
 
-export const ControlPanel = (props: ControlPanelProps) => {
+  useEffect(() => {
+    if (graphState.playing) setAction(actions.Drag);
+  }, [graphState.playing]);
+
+  const updateSpeed = (newSpeed: number) => {
+    setSpeed(newSpeed);
+  };
+
+  const updateDensity = (newDensity: number) => {
+    setDensity(newDensity);
+  };
+
+  const updateAction = (action?: ActionTypes) => {
+    if (action) {
+      setAction(action);
+    }
+  };
+
+  const updateStart = (id: number) => {
+    setStart(id);
+  };
+
+  const updateEnd = (id: number) => {
+    setEnd(id);
+  };
+
+  const updateAlgorithm = (id: number) => {
+    setAlgorithm(id);
+    console.log(algorithm);
+  };
+
+  const handleGenerateRandom = () => {
+    if (!graphState.playing) {
+      const randomGraph: Graph = graphs.random(6, density, viewBox.current);
+
+      graphDispatch({ type: "NEW_GRAPH", graph: randomGraph });
+      setStart(0);
+      setEnd(0);
+    }
+  };
+
+  const handleClearGraph = () => {
+    if (!graphState.playing) graphDispatch({ type: "NEW_GRAPH", graph: new Graph() });
+  };
+
+  const handleRandomizeWeights = () => {
+    if (!graphState.playing) graphDispatch({ type: "RANDOM_WEIGHTS" });
+  };
+
+  const updateView = (bounds: { x: number; y: number; width: number; height: number }) => {
+    viewBox.current = bounds;
+    // setViewBox(bounds);
+  };
   return (
-    <div className="control-panel">
-      <h1> Control Panel </h1>
-      <button className="full-btn" onClick={props.onAllowDrag}>
-        Drag
-      </button>
-      <div className="side-by-side">
-        <button className="half-btn" onClick={props.onAddVertex}>
-          <img src={PlusIcon} alt="Add Icon" className="icon" />
-          Node
-        </button>
-        <button className="half-btn" onClick={props.onAddEdge}>
-          <img src={PlusIcon} alt="Add Icon" className="icon" />
-          Edge
-        </button>
-      </div>
-      <div className="side-by-side">
-        <PlayButton />
-        <div className="control-item">
-          <input
-            type="range"
-            id="speed-control"
-            min={props.speed.min}
-            max={props.speed.max}
-            step="1"
-          ></input>
-          <div className="slider-labels">
-            <span className="label start">slow</span>
-            <span className="label end">fast</span>
-          </div>
+    <>
+      <div className="control-panel">
+        <h1> Control Panel </h1>
+        <div className="group">
+          <Button
+            name="Drag"
+            action={actions.Drag}
+            f={updateAction}
+            selected={action === actions.Drag}
+          />
+          {!graphState.playing && (
+            <Button
+              name="Node"
+              icon={PlusIcon}
+              action={actions.AddVertex}
+              f={updateAction}
+              selected={action === actions.AddVertex}
+            />
+          )}
+          {!graphState.playing && (
+            <Button
+              name="Edge"
+              icon={PlusIcon}
+              action={actions.AddEdge}
+              f={updateAction}
+              selected={action === actions.AddEdge}
+            />
+          )}
         </div>
-      </div>
-      <div className="side-by-side">
-        <button className="half-btn" onClick={props.onGenerateRandom}>
-          Generate
-          <br />
-          Random
-        </button>
-        <div className="control-item">
-          <input
-            type="range"
-            id="density-control"
-            min={props.dense.min}
-            max={props.dense.max}
-            step=".1"
-          ></input>
-          <div className="slider-labels">
-            <span className="label start">sparse</span>
-            <span className="label end">dense</span>
-          </div>
+        <div className="group">
+          <PlayButton algorithm={algorithm} speed={speed} start={start} end={end} />
+          <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
+        <div className="group">
+          <Button name="Generate Random(6)" f={handleGenerateRandom} />
+          <Slider {...densities} value={density} update={updateDensity} />
+        </div>
+        <div className="group">
+          <Button name="Clear Graph" f={handleClearGraph} />
+          {graphState.graph.weighted && (
+            <Button name="Randomize Edge Weights" f={handleRandomizeWeights} />
+          )}
+        </div>
+        <Navigation updateAlgorithm={updateAlgorithm} />
+        <NodeSelection start={start} end={end} setStart={updateStart} setEnd={updateEnd} />
       </div>
-      <button className="full-btn" onClick={props.onClearGraph}>
-        {" "}
-        Clear Graph{" "}
-      </button>
-      <Navigation />
-      <NodeSelection />
-    </div>
+      <GraphSVG action={action} viewBox={viewBox.current} updateView={updateView} />
+    </>
   );
 };

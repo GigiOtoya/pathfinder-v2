@@ -5,12 +5,12 @@ const starter = (center: Point) => {
   const { x, y } = center;
   const g = new Graph();
 
-  g.addVertex(new Vertex(x, y, 25, "A"));
-  g.addVertex(new Vertex(x - 160, y - 120, 25, "B"));
-  g.addVertex(new Vertex(x + 30, y - 150, 25, "C"));
-  g.addVertex(new Vertex(x + 150, y - 20, 25, "D"));
-  g.addVertex(new Vertex(x - 125, y + 50, 25, "E"));
-  g.addVertex(new Vertex(x + 10, y + 150, 25, "F"));
+  g.addVertex(new Vertex(x, y));
+  g.addVertex(new Vertex(x - 160, y - 120));
+  g.addVertex(new Vertex(x + 30, y - 150));
+  g.addVertex(new Vertex(x + 150, y - 20));
+  g.addVertex(new Vertex(x - 125, y + 50));
+  g.addVertex(new Vertex(x + 10, y + 150));
 
   g.addEdge(new Edge(g.vertices[0], g.vertices[1]));
   g.addEdge(new Edge(g.vertices[0], g.vertices[3]));
@@ -24,21 +24,21 @@ const starter = (center: Point) => {
   return g;
 };
 
-type coords = {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
+type bounds = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
-const random = (n: number, p: number, view: coords) => {
+const random = (n: number, p: number, view: bounds) => {
   const g = new Graph();
   const visited = new Set<number>();
   // generate random nodes
   for (let i = 0; i < n; i++) {
     const r = 25;
-    const x = randomInt(view.minX + r, view.maxX - r);
-    const y = randomInt(view.minY + r, view.maxY - r);
+    const x = randomInt(view.x + r, view.width - r);
+    const y = randomInt(view.y + r, view.height - r);
     const name = String.fromCharCode(g.vertices.length + 65);
     g.addVertex(new Vertex(x, y, r, name));
     visited.add(i);
@@ -52,7 +52,6 @@ const random = (n: number, p: number, view: coords) => {
     visited.delete(v);
     g.addEdge(new Edge(g.vertices[u], g.vertices[v]));
     u = v;
-    console.log(visited);
   }
   // make more random edges
   for (let i = 0; i < n; i++) {
@@ -61,7 +60,7 @@ const random = (n: number, p: number, view: coords) => {
     for (let j = 0; j < n; j++) {
       const v = g.vertices[j];
       const makeEdge = Math.random() < p;
-      if (i != j && !neighbors?.has(v) && makeEdge) {
+      if (i !== j && !neighbors?.has(v) && makeEdge) {
         g.addEdge(new Edge(u, v));
       }
     }

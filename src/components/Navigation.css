@@ -14,8 +14,15 @@
   height: 50px;
 }
 
-.selected {
-  background-color: #336dff;
+.nav li.selected {
+  display: flex;
+  align-items: center;
+  /* background-color: #336dff; */
+  background-color: #141414;
+}
+
+.nav .icon {
+  height: 10px;
 }
 
 .nav li:not(.selected):hover {
@@ -23,8 +30,8 @@
 }
 
 .nav li:active {
-  box-shadow: inset 0px 0px 4px #c1c1c1;
-  padding-inline: 12px;
+  /* box-shadow: inset 0px 0px 4px #c1c1c1; */
+  padding-inline: 5px;
 }
 
 .link-style {
