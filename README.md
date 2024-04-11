@@ -7,6 +7,7 @@ Version 2 of Pathfinding Visualizer. This project enables users to create custom
 Version 2 changes:
 
 - Updated control panel
+- Pannable canvas
 - Random Graph Generation density options
   - Sparse
   - Dense
