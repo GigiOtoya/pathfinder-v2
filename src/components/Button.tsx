@@ -1,25 +1,15 @@
-import { ActionTypes } from "../utils/Actions";
+import { ButtonHTMLAttributes } from "react";
 
-interface ButtonProps {
-  name: string;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  text: string;
   icon?: string;
-  action?: ActionTypes;
-  f?: (action?: ActionTypes) => void | (() => void);
-  selected?: boolean;
 }
 
-export const Button = ({ name, icon, action, f, selected }: ButtonProps) => {
-  const handleButtonClick = () => {
-    if (f) {
-      action ? f(action) : f();
-    }
-  };
-
+export const Button = ({ text, icon, ...props }: ButtonProps) => {
   return (
-    <button onClick={handleButtonClick} className={selected ? "selected" : ""}>
-      {selected && <div className="accent"></div>}
-      {icon && <img src={icon} alt={`${name} icon`} className="icon" />}
-      {name}
+    <button {...props}>
+      {icon && <img src={icon} alt={`${text} icon`} className="icon" />}
+      {text}
     </button>
   );
 };
