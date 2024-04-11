@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+# pathfinding-visualizer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Interactive visualization tool for pathfinding and graph traversal.
 
-## Available Scripts
+Version 2 of Pathfinding Visualizer. This project enables users to create custom graphs and apply various algorithms for pathfinding and graph traversal.
 
-In the project directory, you can run:
+Version 2 changes:
 
-### `npm start`
+- Updated control panel
+- Random Graph Generation density options
+  - Sparse
+  - Dense
+- Edge weight randomizer
+- Draggable nodes while playing
+- Play can be stopped
+- Solution persists after completion
+- UI changes
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Algorithms:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Dijkstra Shortest Path
+2. Floyd-Warshall (All-Pairs)
+3. Depth First Search (Recursive)
+4. Depth First Search (Iterative)
+5. Breadth First Search
+6. Prim's Minimum Spanning Tree
+7. Kruskal's Minimum Spanning Tree
 
-### `npm test`
+## Usage
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Go to https://pathfinder-v2-rho.vercel.app/
+- Pick algorithm of choice
+- Change Edge weights with Randomize Edge Weights
+- Choose start and end points
+- Use the +Edge option, then click and drag between two nodes to create a new edge
+- Use the +node option to create a new node
+- Press Play to visualize
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+<img src='walkthrough.gif' title='preview' width='' alt='walkthrough' />

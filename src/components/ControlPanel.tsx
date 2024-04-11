@@ -88,27 +88,24 @@ export const ControlPanel = () => {
         <h1> Control Panel </h1>
         <div className="group">
           <Button
-            name="Drag"
-            action={actions.Drag}
-            f={updateAction}
-            selected={action === actions.Drag}
+            text="Drag"
+            onClick={() => updateAction(actions.Drag)}
+            className={action === actions.Drag ? "selected" : ""}
           />
           {!graphState.playing && (
             <Button
-              name="Node"
+              text="Node"
               icon={PlusIcon}
-              action={actions.AddVertex}
-              f={updateAction}
-              selected={action === actions.AddVertex}
+              onClick={() => updateAction(actions.AddVertex)}
+              className={action === actions.AddVertex ? "selected" : ""}
             />
           )}
           {!graphState.playing && (
             <Button
-              name="Edge"
+              text="Edge"
               icon={PlusIcon}
-              action={actions.AddEdge}
-              f={updateAction}
-              selected={action === actions.AddEdge}
+              onClick={() => updateAction(actions.AddEdge)}
+              className={action === actions.AddEdge ? "selected" : ""}
             />
           )}
         </div>
@@ -117,13 +114,13 @@ export const ControlPanel = () => {
           <Slider {...speeds} value={speed} update={updateSpeed} />
         </div>
         <div className="group">
-          <Button name="Generate Random(6)" f={handleGenerateRandom} />
+          <Button text="Generate Random(6)" onClick={handleGenerateRandom} />
           <Slider {...densities} value={density} update={updateDensity} />
         </div>
         <div className="group">
-          <Button name="Clear Graph" f={handleClearGraph} />
+          <Button text="Clear Graph" onClick={handleClearGraph} />
           {graphState.graph.weighted && (
-            <Button name="Randomize Edge Weights" f={handleRandomizeWeights} />
+            <Button text="Randomize Edge Weights" onClick={handleRandomizeWeights} />
           )}
         </div>
         <Navigation updateAlgorithm={updateAlgorithm} />
